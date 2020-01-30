@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title: 'Aloud',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -33,8 +33,10 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module'
+    ...(process.env.NODE_ENV === 'development' ? [
+      // Doc: https://github.com/nuxt-community/eslint-module
+      '@nuxtjs/eslint-module'
+    ] : [])
   ],
   /*
   ** Nuxt.js modules
@@ -42,8 +44,10 @@ module.exports = {
   modules: [
     // Doc: https://buefy.github.io/#/documentation
     'nuxt-buefy',
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    ...(process.env.NODE_ENV === 'development' ? [
+      // Doc: https://github.com/nuxt-community/dotenv-module
+      '@nuxtjs/dotenv'
+    ] : [])
   ],
   /*
   ** Build configuration
