@@ -1,7 +1,6 @@
 const { Nuxt, Builder } = require('nuxt')
 const express = require('express')
 const session = require('express-session')
-const winston = require('winston')
 const expressWinston = require('express-winston')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -13,6 +12,8 @@ const { logger } = require('./utils')
 config.dev = process.env.NODE_ENV !== 'production'
 
 const app = express()
+app.enable('trust proxy')
+
 app.use(expressWinston.logger({
   winstonInstance: logger,
   ignoreRoute (req) {
@@ -24,7 +25,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: !config.dev }
+  cookie: { secure: 'auto' }
 }))
 
 async function start () {
