@@ -1,3 +1,6 @@
+const { String } = require('runtypes')
+
+String.check(process.env.AUTH0_DOMAIN)
 
 module.exports = {
   mode: 'universal',
