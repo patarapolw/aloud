@@ -1,13 +1,31 @@
 const { Nuxt, Builder } = require('nuxt')
-const fastify = require('fastify')({
-  logger: {
-    prettyPrint: true
-  }
-})
+const express = require('express')
+const session = require('express-session')
+const winston = require('winston')
+const expressWinston = require('express-winston')
+const dotenv = require('dotenv')
+dotenv.config()
+
+const config = require('../nuxt.config.js')
+const { logger } = require('./utils')
 
 // Import and Set Nuxt.js options
-const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
+
+const app = express()
+app.use(expressWinston.logger({
+  winstonInstance: logger,
+  ignoreRoute (req) {
+    return req.url.startsWith('/_')
+  },
+  expressFormat: true
+}))
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: !config.dev }
+}))
 
 async function start () {
   // Instantiate nuxt.js
@@ -26,33 +44,19 @@ async function start () {
     await nuxt.ready()
   }
 
-  fastify.use((req, res, next) => {
-    req.url && req.url.startsWith('/api/') ? next() : nuxt.render(req, res)
-  })
-
-  fastify.get('/api/test.json', {
-    schema: {
-      querystring: {
-        type: 'object',
-        required: ['name'],
-        properties: {
-          name: { type: 'string' },
-          excitement: { type: 'integer' }
-        }
-      }
-    }
-  }, async (req) => {
-    return {
+  app.get('/api/test.json', (req, res) => {
+    res.json({
       test: 1,
       id: req.query.id
-    }
+    })
   })
 
-  fastify.listen(port, host, (err, address) => {
-    if (err) {
-      fastify.log.error(err)
-      process.exit(1)
-    }
+  app.use('/api', require('./api'))
+
+  app.use(nuxt.render)
+
+  app.listen(port, host, () => {
+    logger.info(`Server is running at http://${host}:${port}`)
   })
 }
 

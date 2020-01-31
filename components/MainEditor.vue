@@ -10,6 +10,9 @@ section
     b-tooltip(v-if="!user" label="Login to comment" position="is-right")
       b-button.is-white(@click="doLogin")
         b-icon(icon="account")
+    b-tooltip(v-else label="Click to logout" position="is-right")
+      b-button.is-white(@click="doLogout")
+        b-icon(icon="lock-outline")
     b-tooltip(label="Not displaying as expected? See Markdown tutorial" position="is-right")
       b-button.is-white
         b-icon(icon="information-outline")
@@ -38,19 +41,9 @@ export default {
   },
   data () {
     return {
-      user: null,
+      user: this.$store.state.auth.user,
       isPreview: false,
       currentValue: this.value
-    }
-  },
-  computed: {
-    auth0 () {
-      return this.$store.state.auth.client
-    }
-  },
-  async created () {
-    if (!this.auth0) {
-      await this.$store.dispatch('auth/createClient')
     }
   },
   methods: {
@@ -61,14 +54,11 @@ export default {
       return mdConverter.makeHtml(s)
     },
     async doLogin () {
-      await this.$store.dispatch('auth/login')
-      this.user = await this.auth0.getUser()
+      this.user = await this.$store.dispatch('auth/login')
     },
-    async getUser () {
-      if (this.auth0) {
-        this.user = await this.auth0.getUser()
-      }
-      return this.user
+    async doLogout () {
+      await this.$store.dispatch('auth/logout')
+      this.user = null
     }
   }
 }

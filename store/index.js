@@ -1,7 +1,6 @@
 export const actions = {
-  async nuxtServerInit ({ dispatch }) {
-    if (process.client) {
-      await dispatch('auth/createClient')
-    }
+  async nuxtServerInit ({ commit }, { req }) {
+    commit('auth/addUser', req.session.user)
+    commit('auth/addToken', req.session.token)
   }
 }
