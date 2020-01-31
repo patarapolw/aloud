@@ -1,7 +1,3 @@
-const { String } = require('runtypes')
-
-String.check(process.env.AUTH0_DOMAIN)
-
 module.exports = {
   mode: 'universal',
   /*
@@ -71,5 +67,6 @@ module.exports = {
   server: {
     host: process.env.HOST || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
     port: process.env.PORT
-  }
+  },
+  env: process.env
 }
