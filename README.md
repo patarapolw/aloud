@@ -1,22 +1,29 @@
 # Aloud
 
-> Aloud your comments
+> Aloud your commenting system on your personal web server.
 
-## Build Setup
+## Requirements
 
-``` bash
-# install dependencies
-yarn install
+- MongoDB, probably with [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- [Auth0](https://auth0.com/)
+- [Cloudinary](https://cloudinary.com), if you want your users to be able to upload images, or paste from clipboard.
+- Hosting platform, such as Heroku.
 
-# serve with hot reload at localhost:3000
-yarn dev
+## Setting up
 
-# build for production and launch server
-yarn build
-yarn start
+- Clone this project
+- Create `.env` with the following settings
 
-# generate static project
-yarn generate
+```dotenv
+BASE_URL=
+AUTH0_CLIENT_ID=
+AUTH0_DOMAIN=
+AUTH0_CLIENT_SECRET=
+SESSION_SECRET=
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+- A personal secret, like SESSION_SECRET can be generated via command line, with `openssl rand -base64 32`, or [some other ways](https://www.howtogeek.com/howto/30184/10-ways-to-generate-a-random-password-from-the-command-line/).
+
+## Demo
+
+See <https://aloud-comments.herokuapp.com>
