@@ -1,5 +1,5 @@
 rm -rf dist  # Ensure that dist folder isn't exist in the first place
-git worktree add dist heroku
+git worktree add -f dist heroku
 sed '/aloud\.config\.js/d' .gitignore > dist/.gitignore
 cp aloud.config.js dist/aloud.config.js
 cd dist
