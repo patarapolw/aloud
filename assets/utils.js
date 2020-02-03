@@ -32,8 +32,10 @@ export function getType (a) {
       return 'null'
     } else if (Array.isArray(a)) {
       return 'array'
-    } else {
+    } else if (a.toString() === '[object Object]') {
       return 'record'
+    } else {
+      return a.toString()
     }
   }
   return t
