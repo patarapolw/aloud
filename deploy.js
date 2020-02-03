@@ -10,7 +10,7 @@ const fs = require('fs')
  * @param {NodeJS.WriteStream} stderr
  */
 const pour = (cmd, args, opts, stdout = process.stdout, stderr = process.stderr) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     this.process = spawn(cmd, args, opts)
     this.process.stdout.on('data', (data) => {
       stdout.write(data)
@@ -20,6 +20,9 @@ const pour = (cmd, args, opts, stdout = process.stdout, stderr = process.stderr)
     })
     this.process.on('close', (code) => {
       resolve(code)
+    })
+    this.process.on('error', (err) => {
+      reject(err)
     })
   })
 }
