@@ -1,6 +1,6 @@
 <template lang="pug">
 .container
-  MainEditor(label="Comment")
+  MainEditor(:id="id")
 </template>
 
 <script>
@@ -15,6 +15,9 @@ export default {
   computed: {
     root () {
       return process.client ? frameElement : null
+    },
+    id () {
+      return this.$route.query.id
     }
   },
   created () {

@@ -12,12 +12,13 @@ article.media
     .toggleable-editor-main
       client-only
         simple-mde(
+          :id="id"
           v-model="currentValue"
           ref="mde"
           :disabled="!user"
           disabled-html="Please login to comment.")
     .buttons(style="margin-left: 1rem;")
-        b-button.is-success(:disabled="!user || !currentValue") Post Comment
+        b-button.is-success(:disabled="!user || !currentValue" @click="currentValue = ''") Post Comment
 </template>
 
 <script>
@@ -28,6 +29,10 @@ export default {
     SimpleMde
   },
   props: {
+    id: {
+      default: '',
+      type: String
+    },
     value: {
       default: '',
       type: String

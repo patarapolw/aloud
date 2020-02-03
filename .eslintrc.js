@@ -13,7 +13,6 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
-    'nuxt/no-cjs-in-config': 'off',
     'require-await': 0,
     'no-unused-vars': 0,
     'no-return-await': 0,

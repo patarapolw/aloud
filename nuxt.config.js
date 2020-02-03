@@ -1,4 +1,6 @@
-module.exports = {
+import pkg from './package.json'
+
+export default {
   mode: 'universal',
   /*
   ** Headers of the page
@@ -8,7 +10,7 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: pkg.description || '' }
     ],
     link: [
       { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css' },
@@ -47,11 +49,7 @@ module.exports = {
   */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
-    'nuxt-buefy',
-    ...(process.env.NODE_ENV === 'development' ? [
-      // Doc: https://github.com/nuxt-community/dotenv-module
-      '@nuxtjs/dotenv'
-    ] : [])
+    'nuxt-buefy'
   ],
   /*
   ** Build configuration
@@ -64,7 +62,10 @@ module.exports = {
       config.module.rules.push(
         {
           test: /\.md$/,
-          loader: 'raw-loader'
+          loader: 'raw-loader',
+          options: {
+            esModule: false
+          }
         }
       )
     }

@@ -1,7 +1,8 @@
-const { Router } = require('express')
+import { Router } from 'express'
+import secureMiddleware from '../middleware/secure'
 
 const userRouter = Router()
-userRouter.use(require('../middleware/secure'))
+userRouter.use(secureMiddleware)
 
 userRouter.get('/', (req, res) => {
   res.json(req.user)
@@ -17,4 +18,4 @@ userRouter.delete('/logout', (req, res) => {
   res.sendStatus(201)
 })
 
-module.exports = userRouter
+export default userRouter

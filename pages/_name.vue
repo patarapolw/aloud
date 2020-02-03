@@ -11,7 +11,7 @@ const makeHtml = new MakeHtml()
 export default {
   data () {
     return {
-      raw: require('@/README.md'),
+      raw: require(`@/docs/${this.$route.params.name}.md`),
       html: ''
     }
   },

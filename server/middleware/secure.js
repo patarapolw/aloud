@@ -1,7 +1,7 @@
-const jwt = require('express-jwt')
-const jwksRsa = require('jwks-rsa')
+import jwt from 'express-jwt'
+import jwksRsa from 'jwks-rsa'
 
-module.exports = jwt({
+const secureMiddleware = jwt({
   // Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
   secret: jwksRsa.expressJwtSecret({
     cache: true,
@@ -22,3 +22,5 @@ module.exports = jwt({
     return null
   }
 })
+
+export default secureMiddleware

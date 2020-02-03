@@ -2,27 +2,19 @@
 
 > Aloud your commenting system on your personal web server.
 
-## Requirements
+This project is powered by [MongoDB](https://www.mongodb.com), [Auth0](https://auth0.com) and [Cloudinary](https://cloudinary.com).
 
-- MongoDB, probably with [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- [Auth0](https://auth0.com/)
-- [Cloudinary](https://cloudinary.com), if you want your users to be able to upload images, or paste from clipboard.
-- Hosting platform, such as Heroku.
+## Features
 
-## Setting up
+This project uses [Showdown.js](https://github.com/showdownjs/showdown) to parse Markdown, then sanitized with DOMPurify, and CSS scoped.
 
-- Clone this project
-- Create `.env` with the following settings
+Other than standard features, some of the features are
 
-```dotenv
-BASE_URL=
-AUTH0_CLIENT_ID=
-AUTH0_DOMAIN=
-AUTH0_CLIENT_SECRET=
-SESSION_SECRET=
-```
+- parseImgDimensions `![bar](bar.jpg =100x*)`
+- emoji :smile: :100:
+- simpleLineBreaks
 
-- A personal secret, like SESSION_SECRET can be generated via command line, with `openssl rand -base64 32`, or [some other ways](https://www.howtogeek.com/howto/30184/10-ways-to-generate-a-random-password-from-the-command-line/).
+For more, see [Markdown Guide](/guide)
 
 ## Demo
 

@@ -9,9 +9,10 @@ export function getMdeOptions (id) {
   const makeHtml = new MakeHtml(id)
 
   return {
-    autoSave: {
+    autosave: {
       enabled: !!id,
-      uniqueId: id
+      uniqueId: id,
+      delay: 10000
     },
     toolbar: [
       {
@@ -39,6 +40,10 @@ export function getMdeOptions (id) {
       'image',
       '|',
       'preview',
+      {
+        action: () => {},
+        className: 'fa fa-save'
+      },
       '|',
       {
         name: 'guide',
@@ -50,7 +55,7 @@ export function getMdeOptions (id) {
     indentWithTabs: false,
     placeholder: 'Please enter markdown to continue.',
     previewRender: (plainText) => {
-      return makeHtml.parse(plainText)
+      return `<div class="content">${makeHtml.parse(plainText)}</div>`
     },
     spellChecker: false,
     renderingConfig: {

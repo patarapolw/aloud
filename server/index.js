@@ -1,19 +1,23 @@
-const { Nuxt, Builder } = require('nuxt')
-const express = require('express')
-const session = require('express-session')
-const expressWinston = require('express-winston')
-const MongoStore = require('connect-mongo')(session)
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-dotenv.config()
+import { Nuxt, Builder } from 'nuxt'
+import express from 'express'
+import session from 'express-session'
+import expressWinston from 'express-winston'
+import connectMongo from 'connect-mongo'
+import mongoose from 'mongoose'
 
-const config = require('../nuxt.config.js')
-const { logger } = require('./utils')
-
-// Import and Set Nuxt.js options
-config.dev = process.env.NODE_ENV !== 'production'
+import aloudConfig from '../aloud.config'
+import { logger, loadConfig } from './utils'
 
 async function start () {
+  loadConfig([
+    'mongo.uri'
+  ])
+  const MongoStore = connectMongo(session)
+
+  // Import and Set Nuxt.js options
+  const config = require('../nuxt.config.js').default
+  config.dev = process.env.NODE_ENV !== 'production'
+
   // Instantiate nuxt.js
   const nuxt = new Nuxt(config)
 
@@ -30,7 +34,7 @@ async function start () {
     await nuxt.ready()
   }
 
-  await mongoose.connect(process.env.MONGO_URI, {
+  await mongoose.connect(aloudConfig.mongo.uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -48,7 +52,7 @@ async function start () {
   }))
 
   app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: aloudConfig.session.secret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: 'auto' },

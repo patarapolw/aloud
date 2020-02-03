@@ -37,12 +37,22 @@ export default {
         {
           title: 'Home',
           icon: 'home',
-          to: { name: 'index' }
+          to: '/'
         },
         {
-          title: 'Inspire',
-          icon: 'lightbulb',
-          to: { name: 'inspire' }
+          title: 'Installation',
+          icon: 'settings',
+          to: '/installation'
+        },
+        {
+          title: 'Guide',
+          icon: 'help',
+          to: '/guide'
+        },
+        {
+          title: 'Playground',
+          icon: 'play',
+          to: '/playground'
         },
         {
           title: 'GitHub',
@@ -66,5 +76,9 @@ export default {
 .comment-iframe {
   width: 80%;
   min-width: 500px;
+}
+
+pre code {
+  background-color: unset !important;
 }
 </style>
