@@ -91,6 +91,3 @@ sw.*
 
 # Aloud config files
 aloud.config.js
-
-!aloud.config.js
-.gitignore.tmp
