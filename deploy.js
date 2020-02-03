@@ -38,7 +38,7 @@ async function deployGitignored (patterns) {
     message = process.argv[messageIndex + 1] || message
   }
 
-  await pour('git', ['checkout', '-b', 'heroku'])
+  await pour('git', ['branch', '-b', 'heroku'])
 
   fs.copyFileSync('.gitignore', '.gitignore.tmp')
   const gitignore = fs.createWriteStream('.gitignore', {
@@ -57,6 +57,12 @@ async function deployGitignored (patterns) {
 
   fs.copyFileSync('.gitignore.tmp', '.gitignore')
   fs.unlinkSync('.gitignore.tmp')
+
+  await pour('git', ['add', '.'])
+  await pour('git', ['commit', '-m', 'restore .gitignore'])
+
+  await pour('git', ['branch', 'master'])
+  await pour('git', ['branch', '-D', 'heroku'])
 }
 
 deployGitignored([
