@@ -56,7 +56,7 @@ async function deployGitignored (files) {
 
   await pour('git', ['add', '.'])
   await pour('git', ['commit', '-m', message])
-  await pour('git', ['push', 'heroku', 'heroku:master'])
+  await pour('git', ['push', '-f', 'heroku', 'heroku:master'])
 
   fs.copyFileSync('.gitignore.tmp', '.gitignore')
   fs.unlinkSync('.gitignore.tmp')
@@ -64,7 +64,7 @@ async function deployGitignored (files) {
   await pour('git', ['add', '.'])
   await pour('git', ['commit', '-m', 'restore .gitignore'])
 
-  await pour('git', ['branch', 'master'])
+  await pour('git', ['switch', 'master'])
   await pour('git', ['branch', '-D', 'heroku'])
 
   Object.entries(tmp).map(([f, data]) => {
