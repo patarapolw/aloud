@@ -1,5 +1,6 @@
 import jwt from 'express-jwt'
 import jwksRsa from 'jwks-rsa'
+import config from '../../aloud.config'
 
 const secureMiddleware = jwt({
   // Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
@@ -7,11 +8,11 @@ const secureMiddleware = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `https://${config.auth0.domain}/.well-known/jwks.json`
   }),
 
   // Validate the audience and the issuer.
-  audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+  audience: `https://${config.auth0.domain}/api/v2/`,
   algorithms: ['RS256'],
   getToken: (req) => {
     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
