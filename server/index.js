@@ -2,6 +2,8 @@ const { Nuxt, Builder } = require('nuxt')
 const express = require('express')
 const session = require('express-session')
 const expressWinston = require('express-winston')
+const MongoStore = require('connect-mongo')(session)
+const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -10,23 +12,6 @@ const { logger } = require('./utils')
 
 // Import and Set Nuxt.js options
 config.dev = process.env.NODE_ENV !== 'production'
-
-const app = express()
-app.enable('trust proxy')
-
-app.use(expressWinston.logger({
-  winstonInstance: logger,
-  ignoreRoute (req) {
-    return req.url.startsWith('/_')
-  },
-  expressFormat: true
-}))
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: 'auto' }
-}))
 
 async function start () {
   // Instantiate nuxt.js
@@ -45,12 +30,32 @@ async function start () {
     await nuxt.ready()
   }
 
-  app.get('/api/test.json', (req, res) => {
-    res.json({
-      test: 1,
-      id: req.query.id
-    })
+  await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
   })
+
+  const app = express()
+  app.enable('trust proxy')
+
+  app.use(expressWinston.logger({
+    winstonInstance: logger,
+    ignoreRoute (req) {
+      return req.url.startsWith('/_')
+    },
+    expressFormat: true
+  }))
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: 'auto' },
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection
+    })
+  }))
 
   app.use('/api', require('./api'))
 

@@ -13,5 +13,12 @@ module.exports = jwt({
   // Validate the audience and the issuer.
   audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
   algorithms: ['RS256'],
-  requestProperty: 'session.token'
+  getToken: (req) => {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      const token = req.headers.authorization.split(' ')[1]
+      req.session.token = token
+      return token
+    }
+    return null
+  }
 })
