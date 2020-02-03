@@ -38,7 +38,7 @@ async function deployGitignored (files) {
     message = process.argv[messageIndex + 1] || message
   }
 
-  await pour('git', ['branch', '-b', 'heroku'])
+  await pour('git', ['checkout', '-b', 'heroku'])
 
   fs.copyFileSync('.gitignore', '.gitignore.tmp')
   const gitignore = fs.createWriteStream('.gitignore', {
