@@ -10,14 +10,14 @@ const fs = require('fs')
  */
 async function Pour (cmd, args, options) {
   const p = this.process = spawn(cmd, args, options)
-  console.log('\x1B[37m', [cmd, ...(args || [])].map((el) => {
+  console.log('\x1B[2;37m', [cmd, ...(args || [])].map((el) => {
     return el.includes(' ') ? `"${el.replace(/"/g, '\\"')}"` : el
   }).join(' '), '\x1B[0m')
 
   return new Promise((resolve, reject) => {
     p.stdin.pipe(process.stdin)
-    p.stdout.on('data', d => console.log(d.toString()))
-    p.stderr.on('data', d => console.error(d.toString()))
+    p.stdout.on('data', d => console.log(d.toString().trimEnd()))
+    p.stderr.on('data', d => console.error(d.toString().trimEnd()))
     p.on('error', reject)
     p.on('close', resolve)
   })
@@ -30,7 +30,7 @@ async function Pour (cmd, args, options) {
  */
 async function PourSimple (cmd, options) {
   const [args0, ...args] = cmd.split(' ')
-  return PourSimple(args0, args, options)
+  return Pour(args0, args, options)
 }
 
 /**
