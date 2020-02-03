@@ -8,8 +8,11 @@ const fs = require('fs')
  * @param {string[]} [args]
  * @param {typeof import('child_process').SpawnOptionsWithoutStdio} [options]
  */
-async function pour (cmd, args, options) {
+async function Pour (cmd, args, options) {
   const p = this.process = spawn(cmd, args, options)
+  console.log('\x1B[37m', [cmd, ...(args || [])].map((el) => {
+    return el.includes(' ') ? `"${el.replace(/"/g, '\\"')}"` : el
+  }).join(' '), '\x1B[0m')
 
   return new Promise((resolve, reject) => {
     p.stdin.pipe(process.stdin)
@@ -25,9 +28,9 @@ async function pour (cmd, args, options) {
  * @param {string} cmd
  * @param {typeof import('child_process').SpawnOptionsWithoutStdio} [options]
  */
-async function pourSimple (cmd, options) {
+async function PourSimple (cmd, options) {
   const [args0, ...args] = cmd.split(' ')
-  return pour(args0, args, options)
+  return PourSimple(args0, args, options)
 }
 
 /**
@@ -51,23 +54,23 @@ async function deploy (
   deployMessage = 'Deploy to Heroku'
 ) {
   // Ensure that dist folder isn't exist in the first place
-  await pourSimple('rm -rf dist')
+  await PourSimple('rm -rf dist')
 
   try {
-    await pourSimple(`git branch ${deployBranch} master`)
+    await PourSimple(`git branch ${deployBranch} master`)
   } catch (e) {
     console.error(e)
   }
 
-  await pourSimple(`git worktree add -f ${deployFolder} ${deployBranch}`)
+  await PourSimple(`git worktree add -f ${deployFolder} ${deployBranch}`)
 
   await callback(deployFolder, deployBranch)
 
-  await pourSimple('git add .', {
+  await PourSimple('git add .', {
     cwd: deployFolder
   })
 
-  await pour('git', [
+  await Pour('git', [
     'commit',
     '-m',
     deployMessage
@@ -75,13 +78,13 @@ async function deploy (
     cwd: deployFolder
   })
 
-  await pourSimple(`git push -f heroku ${deployBranch}:master`, {
+  await PourSimple(`git push -f heroku ${deployBranch}:master`, {
     cwd: deployFolder
   })
 
-  await pourSimple(`git worktree remove ${deployFolder}`)
+  await PourSimple(`git worktree remove ${deployFolder}`)
 
-  await pourSimple(`git branch -D ${deployBranch}`)
+  await PourSimple(`git branch -D ${deployBranch}`)
 }
 
 deploy(async (deployFolder) => {
