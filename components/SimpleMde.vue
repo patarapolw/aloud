@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { deepMerge } from '@/assets/utils'
 import { getMdeOptions } from '@/assets/simplemde'
 
 export default {
@@ -28,12 +29,16 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    options: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
     return {
       modelVal: '',
-      options: {},
+      modelOptions: {},
       simplemde: null
     }
   },
@@ -64,7 +69,7 @@ export default {
     }
   },
   mounted () {
-    this.$set(this, 'options', getMdeOptions(this.id))
+    this.$set(this, 'modelOptions', getMdeOptions(this.id))
     this.$nextTick(() => {
       this.initialize()
     })
@@ -95,9 +100,11 @@ export default {
       }
       document.addEventListener('localStorage', this.storageListener)
 
-      const configs = Object.assign({
-        element: this.$el.firstElementChild
-      }, this.options)
+      deepMerge(this.modelOptions, this.options)
+      const configs = {
+        element: this.$el.firstElementChild,
+        ...this.modelOptions
+      }
 
       // 实例化编辑器
       this.simplemde = new SimpleMDE(configs)
@@ -138,7 +145,7 @@ export default {
           toolbarEl.style.display = 'none'
         }
 
-        const previewEl = this.$el.getElementsByClassName('editor-preview')[0]
+        const previewEl = this.$el.querySelector('.editor-preview .content')
         if (previewEl) {
           previewEl.innerHTML = previewEl.innerHTML || this.disabledHtml
         }

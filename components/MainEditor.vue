@@ -6,7 +6,7 @@ article.media
         img.is-rounded.cursor-pointer(:src="user.picture" :alt="user.given_name"
           @click="doLogout" role="button")
       b-tooltip(v-else label="Click to login" position="is-right")
-        img.is-rounded.cursor-pointer(src="https://imgplaceholder.com/96x96/cccccc/757575/fa-user"
+        img.is-rounded.cursor-pointer(src="~/assets/fa-user.png"
           @click="doLogin" role="button")
   .media-content
     .toggleable-editor-main

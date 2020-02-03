@@ -1,6 +1,6 @@
 <template lang="pug">
 .card(style="margin: 1rem")
-  simple-mde
+  simple-mde(:options="{ placeholder: '' }")
 </template>
 
 <script>

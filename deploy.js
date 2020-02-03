@@ -29,9 +29,9 @@ const pour = (cmd, args, opts, stdout = process.stdout, stderr = process.stderr)
  *
  * @link https://stackoverflow.com/a/42050814/9023855
  *
- * @param {string[]} patterns
+ * @param {string[]} files
  */
-async function deployGitignored (patterns) {
+async function deployGitignored (files) {
   const messageIndex = process.argv.indexOf('-m')
   let message = 'deploy to heroku'
   if (messageIndex !== -1) {
@@ -45,8 +45,11 @@ async function deployGitignored (patterns) {
     flags: 'a',
     encoding: 'utf8'
   })
-  patterns.map((f) => {
+
+  const tmp = {}
+  files.map((f) => {
     gitignore.write('\n!' + f)
+    tmp[f] = fs.readFileSync(f, 'utf8')
   })
   gitignore.write('\n' + '.gitignore.tmp')
   gitignore.close()
@@ -63,6 +66,10 @@ async function deployGitignored (patterns) {
 
   await pour('git', ['branch', 'master'])
   await pour('git', ['branch', '-D', 'heroku'])
+
+  Object.entries(tmp).map(([f, data]) => {
+    fs.writeFileSync(f, data)
+  })
 }
 
 deployGitignored([

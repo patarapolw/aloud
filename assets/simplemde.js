@@ -53,7 +53,7 @@ export function getMdeOptions (id) {
       }
     ],
     indentWithTabs: false,
-    placeholder: 'Please enter markdown to continue.',
+    placeholder: 'Please type in markdown to comment.',
     previewRender: (plainText) => {
       return `<div class="content">${makeHtml.parse(plainText)}</div>`
     },
