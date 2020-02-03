@@ -1,41 +1,33 @@
 <template lang="pug">
-section
-  b-field(:label="label")
-  .card.toggleable-editor-main
-    .card-content(v-show="!isPreview && user")
+article.media
+  figure.media-left
+    p.image.is-96x96(style="margin-top: 1rem;")
+      b-tooltip(v-if="user" label="Click to logout" position="is-right")
+        img.is-rounded.cursor-pointer(:src="user.picture" :alt="user.given_name"
+          @click="doLogout" role="button")
+      b-tooltip(v-else label="Click to login" position="is-right")
+        img.is-rounded.cursor-pointer(src="https://imgplaceholder.com/96x96/cccccc/757575/fa-user"
+          @click="doLogin" role="button")
+  .media-content
+    .toggleable-editor-main
       client-only
-        codemirror(
+        simple-mde(
           v-model="currentValue"
-          :options="{ readOnly: !user, ...cmOptions }"
-          @ready="$event.setSize('100%', '100%')")
-    .card-content.preview(v-if="isPreview || !user")
-      .content(v-html="!user ? 'Please login to comment...' : makeHtml(currentValue)")
-  .buttons
-    b-tooltip(v-if="!user" label="Login to comment" position="is-right")
-      b-button.is-white(@click="doLogin")
-        b-icon(icon="account")
-    b-tooltip(v-else label="Click to logout" position="is-right")
-      b-button.is-white(@click="doLogout")
-        b-icon(icon="lock-outline")
-    b-tooltip(label="Not displaying as expected? See Markdown tutorial" position="is-right")
-      b-button.is-white
-        b-icon(icon="information-outline")
-    div(style="flex-grow: 1;")
-    b-button.is-success(:disabled="!user || !currentValue") Send
-    b-button.is-warning(:disabled="!user" @click="isPreview = !isPreview") {{ isPreview ? 'Edit' : 'Preview' }}
-    b-button(:disabled="!currentValue" @click="currentValue = ''") Reset
+          ref="mde"
+          :disabled="!user"
+          disabled-html="Please login to comment.")
+    .buttons(style="margin-left: 1rem;")
+        b-button.is-success(:disabled="!user || !currentValue") Post Comment
 </template>
 
 <script>
-import { MakeHtml } from '@/assets/make-html'
-import { cmOptions } from '@/assets/codemirror'
+import SimpleMde from './SimpleMde'
 
 export default {
+  components: {
+    SimpleMde
+  },
   props: {
-    label: {
-      default: '',
-      type: String
-    },
     value: {
       default: '',
       type: String
@@ -44,19 +36,10 @@ export default {
   data () {
     return {
       user: this.$store.state.auth.user,
-      isPreview: false,
-      currentValue: this.value,
-      cmOptions
+      currentValue: this.value
     }
   },
   methods: {
-    /**
-     * @returns {string}
-     */
-    makeHtml (s) {
-      const makeHtml = new MakeHtml()
-      return makeHtml.parse(s)
-    },
     async doLogin () {
       this.user = await this.$store.dispatch('auth/login')
     },
@@ -76,9 +59,9 @@ export default {
 .toggleable-editor-main {
   margin: 10px;
   height: 200px;
+}
 
-  & > *, .vue-codemirror {
-    height: 100%;
-  }
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

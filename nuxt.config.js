@@ -11,7 +11,11 @@ module.exports = {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
+      { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      { src: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js', async: true }
     ]
   },
   /*
@@ -22,12 +26,12 @@ module.exports = {
   ** Global CSS
   */
   css: [
+    'simplemde/dist/simplemde.min.css'
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    { src: '~plugins/codemirror', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules

@@ -4,12 +4,12 @@ const userRouter = Router()
 userRouter.use(require('../middleware/secure'))
 
 userRouter.get('/', (req, res) => {
-  res.json(req.session.user)
+  res.json(req.user)
 })
 
 userRouter.post('/login', (req, res) => {
-  req.session.user = req.body
-  res.status(201).json(res.body)
+  req.session.user = req.session.user || req.body
+  res.sendStatus(201)
 })
 
 userRouter.delete('/logout', (req, res) => {

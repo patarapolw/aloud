@@ -40,31 +40,40 @@ export const actions = {
     return auth0
   },
   async getToken ({ state, commit, dispatch }) {
-    if (state.token) {
-      return state.token
-    }
-
     /**
      * @type {Auth0Client}
      */
     const client = state.client || await dispatch('getClient')
 
-    const token = await client.getTokenWithPopup()
-    commit('addToken', token)
+    if (!state.token) {
+      const token = await client.getTokenWithPopup()
+      const user = await client.getUser()
+      await fetch('/api/user/login', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      })
+      commit('addToken', token)
+      commit('addUser', user)
 
-    const user = await client.getUser()
-    commit('addUser', user)
+      return token
+    } else {
+      try {
+        const user = await fetch('/api/user/login', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${state.token}`,
+            'Content-Type': 'application/json'
+          }
+        }).then(r => r.json())
+        commit('addUser', user)
+      } catch (e) {}
+    }
 
-    await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-
-    return token
+    return state.token
   },
   isAuthenticated ({ state }) {
     return !!state.user
