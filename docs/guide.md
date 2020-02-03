@@ -33,7 +33,7 @@
 
 this is a :smile: smile emoji
 
-A complete list of available emojis can be foun [here](https://github.com/showdownjs/showdown/wiki/emojis).
+A complete list of available emojis can be found [here](https://github.com/showdownjs/showdown/wiki/emojis).
 
 ## Quotes
 
