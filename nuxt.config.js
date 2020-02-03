@@ -1,4 +1,9 @@
 import pkg from './package.json'
+import { loadConfig } from './server/utils'
+
+loadConfig([
+  'mongo.uri'
+])
 
 export default {
   mode: 'universal',

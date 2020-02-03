@@ -6,6 +6,7 @@ import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 
 import aloudConfig from '../aloud.config'
+import config from '../nuxt.config'
 import { logger, loadConfig } from './utils'
 
 async function start () {
@@ -15,7 +16,6 @@ async function start () {
   const MongoStore = connectMongo(session)
 
   // Import and Set Nuxt.js options
-  const config = require('../nuxt.config.js').default
   config.dev = process.env.NODE_ENV !== 'production'
 
   // Instantiate nuxt.js
