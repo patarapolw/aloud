@@ -45,3 +45,19 @@ Simply create an `<iframe>` with a URL looking like this.
 ```
 
 You'll also have to make sure that your id is in the list of `allowedUrls`.
+
+## Deploying to Heroku
+
+Easily managing branches and `.gitignore`'d files, can easily be done with `git worktree`.
+
+```sh
+rm -rf dist  # Ensure that dist folder isn't exist in the first place
+git worktree add dist heroku
+sed '/aloud.config.js/d' aloud.config.js > dist/aloud.config.js
+cd dist
+git add .
+git commit -m 'Deploy to Heroku'
+git push heroku heroku:master
+cd ..
+git worktree remove dist
+```
