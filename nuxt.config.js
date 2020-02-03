@@ -18,11 +18,7 @@ export default {
       { hid: 'description', name: 'description', content: pkg.description || '' }
     ],
     link: [
-      { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ],
-    script: [
-      { src: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js', async: true }
     ]
   },
   /*
@@ -54,7 +50,8 @@ export default {
   */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
-    'nuxt-buefy'
+    'nuxt-buefy',
+    '@nuxtjs/redirect-module'
   ],
   /*
   ** Build configuration
@@ -79,5 +76,8 @@ export default {
     host: process.env.HOST || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
     port: process.env.PORT
   },
-  env: process.env
+  env: process.env,
+  redirect: [
+    { from: '^/docs/(.*)\\.md$', to: '/$1' }
+  ]
 }

@@ -9,7 +9,7 @@ import { MakeHtml } from '@/assets/make-html'
 const makeHtml = new MakeHtml()
 
 export default {
-  data () {
+  async asyncData () {
     return {
       raw: require('@/README.md'),
       html: ''

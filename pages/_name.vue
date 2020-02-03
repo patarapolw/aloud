@@ -9,10 +9,14 @@ import { MakeHtml } from '@/assets/make-html'
 const makeHtml = new MakeHtml()
 
 export default {
-  data () {
-    return {
-      raw: require(`@/docs/${this.$route.params.name}.md`),
-      html: ''
+  async asyncData ({ error, params }) {
+    try {
+      return {
+        raw: require(`@/docs/${params.name}.md`),
+        html: ''
+      }
+    } catch (e) {
+      return error({ statusCode: 404, message: e.message })
     }
   },
   created () {

@@ -9,6 +9,14 @@ import MainEditor from '@/components/MainEditor'
 
 export default {
   layout: 'empty',
+  head: {
+    link: [
+      { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css' }
+    ],
+    script: [
+      { src: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js', async: true }
+    ]
+  },
   components: {
     MainEditor
   },

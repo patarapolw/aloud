@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.6.3",
+    "@nuxtjs/redirect-module": "^0.3.1",
     "codemirror": "^5.51.0",
     "connect-mongo": "^3.2.0",
     "cross-env": "^5.2.0",

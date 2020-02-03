@@ -14,7 +14,11 @@ Other than standard features, some of the features are
 - emoji :smile: :100:
 - simpleLineBreaks
 
-For more, see [Markdown Guide](/guide)
+For more, see [Markdown Guide](/docs/guide.md).
+
+## Installation
+
+See [Installation Guide](/docs/installation.md).
 
 ## Demo
 
