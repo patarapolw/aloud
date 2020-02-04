@@ -29,6 +29,7 @@ export function flattenConfig (blacklist = []) {
       console.log('Cannot find aloud.config.js')
     }
   }
+  return {}
 }
 
 /**

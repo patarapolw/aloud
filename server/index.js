@@ -11,8 +11,6 @@ import { logger, flattenConfig } from './utils'
 
 async function start () {
   Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
-  console.log(process.env)
-
   const MongoStore = connectMongo(session)
 
   // Import and Set Nuxt.js options
