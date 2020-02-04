@@ -6,14 +6,14 @@ import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 import enforce from 'express-sslify'
 
-import aloudConfig from '../aloud.config'
 import config from '../nuxt.config'
-import { logger, loadConfig } from './utils'
+import { logger, flattenConfig } from './utils'
 
 async function start () {
-  loadConfig([
-    'mongo.uri'
-  ])
+  try {
+    Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
+  } catch (e) {}
+
   const MongoStore = connectMongo(session)
 
   // Import and Set Nuxt.js options
@@ -35,7 +35,7 @@ async function start () {
     await nuxt.ready()
   }
 
-  await mongoose.connect(aloudConfig.mongo.uri, {
+  await mongoose.connect(process.env['mongo.uri'], {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -58,7 +58,7 @@ async function start () {
   }))
 
   app.use(session({
-    secret: aloudConfig.session.secret,
+    secret: process.env['session.secret'],
     resave: false,
     saveUninitialized: true,
     cookie: { secure: 'auto' },

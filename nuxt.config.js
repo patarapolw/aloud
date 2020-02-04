@@ -1,9 +1,12 @@
 import pkg from './package.json'
-import { loadConfig } from './server/utils'
+import { flattenConfig } from './server/utils'
 
-loadConfig([
-  'mongo.uri'
-])
+try {
+  Object.entries(flattenConfig([
+    /mongo\.uri/,
+    /secret/
+  ])).map(([k, v]) => { process.env[k] = process.env[k] || v })
+} catch (e) {}
 
 export default {
   mode: 'universal',

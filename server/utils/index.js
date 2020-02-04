@@ -18,26 +18,33 @@ export const logger = winston.createLogger({
 
 /**
  *
- * @param {string[]} [blacklist=[]]
+ * @param {RegExp[]} [blacklist=[]]
  */
-export function loadConfig (blacklist = []) {
-  loadObjectToEnv(require('../../aloud.config'), '', blacklist)
-  return process.env
+export function flattenConfig (blacklist = []) {
+  try {
+    return flattenObject(require('../../aloud.config'), blacklist)
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Cannot find aloud.config.js')
+    }
+  }
 }
 
 /**
  *
- * @param {string[]} [blacklist=[]]
+ * @param {RegExp[]} [blacklist=[]]
  */
-function loadObjectToEnv (obj, prev = '', blacklist) {
+function flattenObject (obj, blacklist, prev = '', result = {}) {
   for (const [k, v] of Object.entries(obj)) {
     if (v && typeof v === 'object') {
-      loadObjectToEnv(v, `${k}.`, blacklist)
+      flattenObject(v, blacklist, `${k}.`, result)
     } else {
       const key = `${prev}${k}`
-      if (!(key.includes('secret') || blacklist.includes(key))) {
-        process.env[key] = process.env[key] || v.toString()
+      if (!blacklist.some(el => el.test(k))) {
+        result[key] = v.toString()
       }
     }
   }
+  return result
 }
