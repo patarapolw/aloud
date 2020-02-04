@@ -32,9 +32,7 @@ async function start () {
     await nuxt.ready()
   }
 
-  console.log(process.env)
-
-  await mongoose.connect(process.env['mongo.uri'], {
+  await mongoose.connect(process.env.mongo_uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -57,7 +55,7 @@ async function start () {
   }))
 
   app.use(session({
-    secret: process.env['session.secret'],
+    secret: process.env.session_secret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: 'auto' },
@@ -75,4 +73,4 @@ async function start () {
   })
 }
 
-start()
+start().catch(logger.error)

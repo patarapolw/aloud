@@ -39,7 +39,7 @@ export function flattenConfig (blacklist = []) {
 function flattenObject (obj, blacklist, prev = '', result = {}) {
   for (const [k, v] of Object.entries(obj)) {
     if (v && typeof v === 'object') {
-      flattenObject(v, blacklist, `${k}.`, result)
+      flattenObject(v, blacklist, `${k}_`, result)
     } else {
       const key = `${prev}${k}`
       if (!blacklist.some(el => el.test(k))) {

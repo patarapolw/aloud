@@ -31,9 +31,9 @@ export const actions = {
     }
 
     const auth0 = await createAuth0Client({
-      domain: process.env['auth0.domain'],
-      client_id: process.env['auth0.clientId'],
-      audience: `https://${process.env['auth0.domain']}/api/v2/`
+      domain: process.env.auth0_domain,
+      client_id: process.env.auth0_clientId,
+      audience: `https://${process.env.auth0_domain}/api/v2/`
     })
     commit('addClient', auth0)
 
