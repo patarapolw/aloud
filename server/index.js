@@ -32,6 +32,8 @@ async function start () {
     await nuxt.ready()
   }
 
+  console.log(process.env)
+
   await mongoose.connect(process.env['mongo.uri'], {
     useNewUrlParser: true,
     useUnifiedTopology: true,
