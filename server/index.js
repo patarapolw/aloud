@@ -4,6 +4,7 @@ import session from 'express-session'
 import expressWinston from 'express-winston'
 import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
+import enforce from 'express-sslify'
 
 import aloudConfig from '../aloud.config'
 import config from '../nuxt.config'
@@ -41,6 +42,11 @@ async function start () {
   })
 
   const app = express()
+
+  if (!config.dev) {
+    app.use(enforce.HTTPS({ trustProtoHeader: true }))
+  }
+
   app.enable('trust proxy')
 
   app.use(expressWinston.logger({
