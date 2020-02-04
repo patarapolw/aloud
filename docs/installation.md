@@ -12,7 +12,7 @@ This is powered by Express.js (on Node.js), and is tested on Yarn.
 ## Instructions
 
 - Clone this project
-- Create `/aloud.config.js` with the settings look like this
+- Create `./aloud.config.js` with the settings look like this
 
 ```js
 export default {
@@ -30,6 +30,11 @@ export default {
   },
   mongo: {
     uri: '<GET THIS FROM MONGODB>'
+  },
+  cloudinary: {
+    cloudName: '<GET THIS FROM CLOUDINARY>',
+    apiKey: '<GET THIS FROM CLOUDINARY>',
+    apiSecret: '<GET THIS FROM CLOUDINARY>'
   }
 }
 ```
@@ -50,19 +55,8 @@ You'll also have to make sure that your id is in the list of `allowedUrls`.
 
 Easily managing branches and `.gitignore`'d files, can easily be done with `git worktree`.
 
-- Preparation
-  - Remove `./dist`
-  - Create a new branch to support `git worktree`
-
 ```sh
-rm -rf dist
 git branch master heroku
-```
-
-- Deploy script
-
-```sh
-rm -rf dist  # Ensure that dist folder isn't exist in the first place
 git worktree add dist heroku
 sed '/aloud\.config\.js/d' .gitignore > dist/.gitignore
 cp aloud.config.js dist/aloud.config.js
@@ -72,4 +66,7 @@ git commit -m 'Deploy to Heroku'
 git push heroku heroku:master
 cd ..
 git worktree remove dist
+git branch -D heroku
 ```
+
+BTW, I have created a deploy script, for my own sanity, [here](https://github.com/patarapolw/aloud/tree/master/deploy.js).
