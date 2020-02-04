@@ -53,20 +53,5 @@ You'll also have to make sure that your id is in the list of `allowedUrls`.
 
 ## Deploying to Heroku
 
-Easily managing branches and `.gitignore`'d files, can easily be done with `git worktree`.
-
-```sh
-git branch master heroku
-git worktree add dist heroku
-sed '/aloud\.config\.js/d' .gitignore > dist/.gitignore
-cp aloud.config.js dist/aloud.config.js
-cd dist
-git add .
-git commit -m 'Deploy to Heroku'
-git push heroku heroku:master
-cd ..
-git worktree remove dist
-git branch -D heroku
-```
-
-BTW, I have created a deploy script, for my own sanity, [here](https://github.com/patarapolw/aloud/tree/master/deploy.js).
+- Push secrets to Heroku with `node ./push-secrets.js`
+- Now, you can `git push heroku master` as usual.
