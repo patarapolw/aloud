@@ -1,12 +1,10 @@
 import pkg from './package.json'
 import { flattenConfig } from './server/utils'
 
-try {
-  Object.entries(flattenConfig([
-    /mongo\.uri/,
-    /secret/
-  ])).map(([k, v]) => { process.env[k] = process.env[k] || v })
-} catch (e) {}
+Object.entries(flattenConfig([
+  /mongo\.uri/,
+  /secret/
+])).map(([k, v]) => { process.env[k] = process.env[k] || v })
 
 export default {
   mode: 'universal',

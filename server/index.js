@@ -10,9 +10,8 @@ import config from '../nuxt.config'
 import { logger, flattenConfig } from './utils'
 
 async function start () {
-  try {
-    Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
-  } catch (e) {}
+  Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
+  console.log(process.env)
 
   const MongoStore = connectMongo(session)
 
