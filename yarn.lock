@@ -7561,6 +7561,13 @@ postcss@7.x.x, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.16,
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
+pour-console@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/pour-console/-/pour-console-1.0.1.tgz#419c7f617c3148d8cf465a0c6111da79d4b20038"
+  integrity sha512-Djeb8gjMjVOWNozJn9MQZ3vO92XQV3tGDh18vCBEO504ITsZwj3IXFa281V5Fx+72KIKPWAAvMJf627AlL4jTw==
+  dependencies:
+    shlex "^2.0.1"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -8504,6 +8511,11 @@ shell-quote@^1.6.1:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
   integrity sha512-mRz/m/JVscCrkMyPqHc/bczi3OQHkLTqXHEFu0zDhK/qfv3UcOA4SVmRCLmos4bhjr9ekVQubj/R7waKapmiQg==
+
+shlex@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/shlex/-/shlex-2.0.1.tgz#f3dfa388400604928fdc2d50388f421b8895ddf6"
+  integrity sha512-XrweL4ORG4Y9E9VvqsAjQ0Dhr4oW3BP6d4IceL7EnRA5Y7KU+4wCFg9HMhFm7SxhVswKu9emOvblBr7J17Vqtg==
 
 shortid@^2.2.15:
   version "2.2.15"

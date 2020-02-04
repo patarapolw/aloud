@@ -48,6 +48,7 @@
     "eslint-plugin-nuxt": ">=0.4.2",
     "fs-extra": "^8.1.0",
     "nodemon": "^1.18.9",
+    "pour-console": "^1.0.1",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "raw-loader": "^4.0.0",
