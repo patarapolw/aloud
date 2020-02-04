@@ -5,12 +5,14 @@ import expressWinston from 'express-winston'
 import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 import enforce from 'express-sslify'
-
 import config from '../nuxt.config'
+import apiRouter from './api'
+
 import { logger, flattenConfig } from './utils'
 
 async function start () {
   Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
+
   const MongoStore = connectMongo(session)
 
   // Import and Set Nuxt.js options
@@ -35,7 +37,8 @@ async function start () {
   await mongoose.connect(process.env.mongo_uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
   })
 
   const app = express()
@@ -64,7 +67,7 @@ async function start () {
     })
   }))
 
-  app.use('/api', require('./api'))
+  app.use('/api', apiRouter)
 
   app.use(nuxt.render)
 

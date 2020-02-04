@@ -1,4 +1,5 @@
 import createAuth0Client from '@auth0/auth0-spa-js'
+import Vue from 'vue'
 
 export const state = () => ({
   client: null,
@@ -17,7 +18,7 @@ export const mutations = {
     state.token = null
   },
   addUser (state, user) {
-    state.user = user
+    Vue.set(state, 'user', user)
   },
   removeUser (state) {
     state.user = null
@@ -39,41 +40,34 @@ export const actions = {
 
     return auth0
   },
-  async getToken ({ state, commit, dispatch }) {
+  async getToken ({
+    state: { client, token },
+    commit, dispatch
+  }) {
     /**
      * @type {Auth0Client}
      */
-    const client = state.client || await dispatch('getClient')
+    client = client || await dispatch('getClient')
 
-    if (!state.token) {
-      const token = await client.getTokenWithPopup()
-      const user = await client.getUser()
-      await fetch('/api/user/login', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
-      })
+    if (!token) {
+      token = await client.getTokenWithPopup()
       commit('addToken', token)
+
+      const user = await client.getUser()
+      await this.$axios.$post('/api/user/login', user)
+
       commit('addUser', user)
 
       return token
     } else {
       try {
-        const user = await fetch('/api/user/login', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${state.token}`,
-            'Content-Type': 'application/json'
-          }
-        }).then(r => r.json())
+        const r = await this.$axios.$post('/api/user/login')
+        const user = r.data
         commit('addUser', user)
       } catch (e) {}
     }
 
-    return state.token
+    return token
   },
   isAuthenticated ({ state }) {
     return !!state.user
@@ -87,12 +81,7 @@ export const actions = {
       return false
     }
 
-    await fetch('/api/user/logout', {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${state.token}`
-      }
-    })
+    await this.$axios.$delete('/api/user/logout')
 
     commit('removeUser')
     commit('removeToken')

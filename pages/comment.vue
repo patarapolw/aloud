@@ -1,11 +1,13 @@
 <template lang="pug">
-.container
-  MainEditor(:id="id")
+.container(style="margin-bottom: 50px;")
+  MainEditor(:id="id" @post="onPost" :reply-to="replyTo")
+  Entry(v-for="it in entries" :key="it._id" :entry="it" @reply="onReply")
 </template>
 
 <script>
 import { lit as css } from '@/assets/utils'
 import MainEditor from '@/components/MainEditor'
+import Entry from '@/components/Entry'
 
 export default {
   layout: 'empty',
@@ -18,7 +20,15 @@ export default {
     ]
   },
   components: {
-    MainEditor
+    MainEditor,
+    Entry
+  },
+  data () {
+    return {
+      entries: [],
+      hasMore: false,
+      replyTo: ''
+    }
   },
   computed: {
     root () {
@@ -35,6 +45,32 @@ export default {
         max-width: 90vw;
         min-height: 50vh;
       `
+    }
+    this.fetchEntries()
+  },
+  methods: {
+    async fetchEntries () {
+      if (this.$store.state.auth.token && process.client) {
+        const result = await this.$axios.$get('/api/post/', {
+          params: { path: this.id, offset: this.entries.length }
+        })
+
+        this.entries = [...this.entries, ...result.data]
+        this.$set(this, 'entries', this.entries)
+
+        if (this.entries.length < result.count) {
+          this.hasMore = true
+        } else {
+          this.hasMore = false
+        }
+      }
+    },
+    onPost () {
+      this.$set(this, 'entries', [])
+      this.fetchEntries()
+    },
+    onReply (id) {
+      this.replyTo = id
     }
   }
 }

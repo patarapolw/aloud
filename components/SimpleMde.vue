@@ -129,9 +129,11 @@ export default {
     },
     handleInput (val) {
       this.unAutosave()
-
       this.isValueUpdateFromInner = true
       this.$emit('input', val)
+      this.$nextTick(() => {
+        this.isValueUpdateFromInner = false
+      })
     },
     setDisabled () {
       const SimpleMDE = require('simplemde')
@@ -147,7 +149,7 @@ export default {
 
         const previewEl = this.$el.querySelector('.editor-preview .content')
         if (previewEl) {
-          previewEl.innerHTML = previewEl.innerHTML || this.disabledHtml
+          previewEl.innerHTML = this.disabledHtml
         }
       } else {
         if (this.simplemde.isPreviewActive()) {
@@ -211,8 +213,10 @@ export default {
   height: 100%;
 }
 .CodeMirror {
-  min-height: none;
   flex-grow: 1;
   min-height: auto;
+}
+.CodeMirror-scroll {
+  min-height: unset;
 }
 </style>

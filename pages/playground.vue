@@ -1,5 +1,5 @@
 <template lang="pug">
-.card(style="margin: 1rem")
+.card(style="margin: 1rem; height: 500px;")
   simple-mde(:options="{ placeholder: '' }")
 </template>
 

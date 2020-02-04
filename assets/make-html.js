@@ -37,7 +37,7 @@ export class MakeHtml {
         el.innerHTML = scopeCss(el.innerHTML, `#${this.id}`)
       })
 
-      return root.innerHTML
+      return `<div id="${this.id}">${root.innerHTML}</div>`
     }
     return ''
   }

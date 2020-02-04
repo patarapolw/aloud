@@ -1,6 +1,6 @@
 export const actions = {
-  async nuxtServerInit ({ commit }, { req }) {
-    commit('auth/addUser', req.session.user)
-    commit('auth/addToken', req.session.token)
+  async nuxtServerInit ({ commit }, { req: { session: { token, user } } }) {
+    commit('auth/addUser', user)
+    commit('auth/addToken', token)
   }
 }

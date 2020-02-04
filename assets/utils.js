@@ -1,4 +1,17 @@
+import SparkMD5 from 'spark-md5'
+
 export const lit = (segs, ...parts) => segs.map((s, i) => `${s}${parts[i]}`).join('')
+
+/**
+ *
+ * @param {string} [email]
+ * @param {number} [size]
+ */
+export function getGravatarUrl (email, size = 96) {
+  return `https://www.gravatar.com/avatar/${
+    email ? SparkMD5.hash(email.trim().toLocaleLowerCase()) : '0'
+  }?s=${size}&d=mp`
+}
 
 export function deepMerge (target, input) {
   const t = getType(target)
