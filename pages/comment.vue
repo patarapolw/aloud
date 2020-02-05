@@ -51,7 +51,7 @@ export default {
   },
   mounted () {
     if (this.root) {
-      this.root.addEventListener('scroll', () => {
+      window.addEventListener('scroll', () => {
         this.setHeight()
       })
       this.setHeight()
