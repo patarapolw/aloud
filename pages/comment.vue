@@ -54,6 +54,7 @@ export default {
       this.root.addEventListener('scroll', () => {
         this.setHeight()
       })
+      this.setHeight()
     }
   },
   methods: {

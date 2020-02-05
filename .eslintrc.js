@@ -16,6 +16,7 @@ module.exports = {
     'require-await': 0,
     'no-unused-vars': 0,
     'no-return-await': 0,
-    'no-lonely-if': 0
+    'no-lonely-if': 0,
+    'import/order': 0
   }
 }

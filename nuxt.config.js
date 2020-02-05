@@ -82,5 +82,10 @@ export default {
   env: process.env,
   redirect: [
     { from: '^/docs/(.*)\\.md$', to: '/$1' }
-  ]
+  ],
+  axios: {
+    host: process.env.HOST,
+    port: process.env.PORT,
+    https: process.env.NODE_ENV === 'production'
+  }
 }
