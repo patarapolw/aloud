@@ -49,6 +49,13 @@ export default {
     }
     this.fetchEntries()
   },
+  mounted () {
+    if (this.root) {
+      this.root.addEventListener('scroll', () => {
+        this.setHeight()
+      })
+    }
+  },
   methods: {
     async fetchEntries () {
       if (process.client) {

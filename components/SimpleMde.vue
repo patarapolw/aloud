@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+
 import { deepMerge } from '@/assets/utils'
 import { getMdeOptions } from '@/assets/simplemde'
 
@@ -109,6 +111,31 @@ export default {
       // 实例化编辑器
       this.simplemde = new SimpleMDE(configs)
       this.simplemde.codemirror.setSize('100%', '100%')
+
+      this.simplemde.codemirror.on('paste', async (ins, evt) => {
+        const { items } = evt.clipboardData || {}
+        if (items) {
+          for (const k of Object.keys(items)) {
+            const item = items[k]
+            if (item.kind === 'file') {
+              evt.preventDefault()
+              const blob = item.getAsFile()
+              const formData = new FormData()
+              formData.append('file', blob)
+              formData.append('user', this.$store.state.auth.user.email)
+
+              const start = ins.getCursor()
+              ins.getDoc().replaceRange(`Uploading from clipboard...`, start)
+              const end = ins.getCursor()
+
+              const r = await this.$axios.$post('/api/media/upload', formData)
+
+              ins.getDoc().replaceRange(`![${dayjs().format()}](${r.secure_url})`, start, end)
+            }
+          }
+        }
+      })
+
       if (this.value) {
         this.simplemde.value(this.value)
       }

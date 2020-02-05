@@ -5,9 +5,9 @@ import expressWinston from 'express-winston'
 import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 import enforce from 'express-sslify'
+
 import config from '../nuxt.config'
 import apiRouter from './api'
-
 import { logger, flattenConfig } from './utils'
 
 async function start () {

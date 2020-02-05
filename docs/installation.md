@@ -18,7 +18,7 @@ This is powered by Express.js (on Node.js), and is tested on Yarn.
 export default {
   baseUrl: 'https://aloud-comments.herokuapp.com',
   allowedUrls: [
-    /:\/\/aloud-comments.herokuapp.com/
+    '://aloud-comments\.herokuapp\.com'
   ],
   session: {
     secret: '<GENERATE IT YOURSELF>'
@@ -34,7 +34,8 @@ export default {
   cloudinary: {
     cloudName: '<GET THIS FROM CLOUDINARY>',
     apiKey: '<GET THIS FROM CLOUDINARY>',
-    apiSecret: '<GET THIS FROM CLOUDINARY>'
+    apiSecret: '<GET THIS FROM CLOUDINARY>',
+    folder: 'aloud'
   }
 }
 ```
