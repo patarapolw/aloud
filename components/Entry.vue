@@ -10,14 +10,18 @@ section
         client-only(v-else)
           simple-mde(v-model="value" style="height: 200px;" @init="$emit('render')" :id="id")
       small
-        a(@click="doLike" v-if="user.email !== $store.state.auth.user.email") Like
-        span(v-if="user.email !== $store.state.auth.user.email") {{' · '}}
-        a(@click="doReply" v-if="id") Reply
-        span(v-if="id") {{' · '}}
-        a(v-if="user.email === $store.state.auth.user.email" @click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
-        span(v-if="user.email === $store.state.auth.user.email") {{' · '}}
-        a(v-if="user.email === $store.state.auth.user.email" @click="doDelete") Delete
-        span(v-if="user.email === $store.state.auth.user.email") {{' · '}}
+        span(v-if="isAuthorized && !isYou")
+          a(@click="doLike") Like
+          span {{' · '}}
+        span(v-if="isAuthorized && id")
+          a(@click="doReply") Reply
+          span {{' · '}}
+        span(v-if="isAuthorized && isYou")
+          a(@click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
+          span {{' · '}}
+        span(v-if="isAuthorized && isYou")
+          a(@click="doDelete") Delete
+          span {{' · '}}
         span Posted by {{user.nickname}}
         span {{' · '}}
         span {{ pastDuration }} ago
@@ -76,6 +80,12 @@ export default {
     }
   },
   computed: {
+    isAuthorized () {
+      return !!this.$store.state.auth.user
+    },
+    isYou () {
+      return this.user.email === this.authUser.email
+    },
     id () {
       return this.entry._id
     },
@@ -100,8 +110,11 @@ export default {
     user () {
       return this.entry.user ? this.entry.user
         : this.replyTo
-          ? (this.$store.state.auth.user || {})
+          ? this.authUser
           : {}
+    },
+    authUser () {
+      return this.$store.state.auth.user || {}
     }
   },
   created () {
@@ -113,7 +126,7 @@ export default {
   methods: {
     async doLike () {
       if (this.id) {
-        await this.$axios.$put(`/api/post/${this.id}/like`)
+        await this.$axios.$put(`/api/post/${this.id}/like`, { path: this.path })
         this.$set(this.like, 'default', this.like.default || 0)
         this.$nextTick(() => {
           this.like.default++
@@ -127,7 +140,7 @@ export default {
     async toggleEdit () {
       if (this.modelIsEdit) {
         if (this.id) {
-          await this.$axios.$post(`/api/post/${this.id}`, { content: this.value })
+          await this.$axios.$post(`/api/post/${this.id}`, { content: this.value, path: this.path })
         } else {
           await this.$axios.$put(`/api/post/`, {
             path: this.path,
@@ -144,7 +157,9 @@ export default {
     },
     async doDelete () {
       if (this.id) {
-        await this.$axios.$delete(`/api/post/${this.id}`)
+        await this.$axios.$delete(`/api/post/${this.id}`, {
+          params: { path: this.path }
+        })
       }
       this.$emit('delete')
     },

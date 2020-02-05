@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     async fetchEntries () {
-      if (this.$store.state.auth.token && process.client) {
+      if (process.client) {
         const result = await this.$axios.$get('/api/post/', {
           params: { path: this.id, offset: this.entries.length }
         })

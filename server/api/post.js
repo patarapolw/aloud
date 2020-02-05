@@ -5,12 +5,20 @@ import dayjsPluginUTC from 'dayjs-plugin-utc'
 import escapeRegexp from 'escape-string-regexp'
 
 import secureMiddleware from '../middleware/secure'
+import allowedOrigins from '../middleware/allowedOrigins'
 import { Post } from '../db'
 
 dayjs.extend(dayjsPluginUTC)
 
 const postRouter = Router()
-postRouter.use(secureMiddleware)
+postRouter.use((req, res, next) => {
+  if (req.method !== 'GET') {
+    secureMiddleware(req, res, next)
+  } else {
+    next()
+  }
+})
+postRouter.use(allowedOrigins)
 
 postRouter.get('/:id', async (req, res, next) => {
   try {
