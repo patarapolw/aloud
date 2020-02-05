@@ -111,7 +111,7 @@ export default {
       // 实例化编辑器
       this.simplemde = new SimpleMDE(configs)
       this.simplemde.codemirror.setSize('100%', '100%')
-      this.codemirror.addKeyMap({
+      this.simplemde.codemirror.addKeyMap({
         'Cmd-S': () => { this.doAutosave(true) },
         'Ctrl-S': () => { this.doAutosave(true) }
       })
