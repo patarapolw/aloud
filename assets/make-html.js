@@ -2,12 +2,15 @@ import showdown from 'showdown'
 import createDOMPurify from 'dompurify'
 import shortid from 'shortid'
 import scopeCss from 'scope-css'
+import SparkMD5 from 'spark-md5'
 
 export class MakeHtml {
-  constructor (
-    id = `el__${shortid.generate()}`
-  ) {
-    this.id = id
+  /**
+   *
+   * @param {string} [id]
+   */
+  constructor (id) {
+    this.id = id ? `el__${SparkMD5.hash(id)}` : `el__${shortid.generate()}`
     this.mdConverter = new showdown.Converter({
       parseImgDimensions: true,
       simplifiedAutoLink: true,
