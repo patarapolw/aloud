@@ -85,7 +85,12 @@ postRouter.put('/', async (req, res, next) => {
 
 postRouter.delete('/:id', async (req, res, next) => {
   try {
-    await Post.findByIdAndRemove(req.params.id).exec()
+    await Post.deleteMany({
+      $or: [
+        { _id: req.params.id },
+        { replyTo: new RegExp(escapeRegexp(req.params.id)) }
+      ]
+    }).exec()
     res.sendStatus(201)
   } catch (e) {
     next(e)

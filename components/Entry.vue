@@ -136,6 +136,7 @@ export default {
           })
           this.$emit('post')
           this.$emit('delete')
+          this.$emit('render')
           return
         }
       }
