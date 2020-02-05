@@ -84,9 +84,6 @@ export default {
     { from: '^/docs/(.*)\\.md$', to: '/$1' }
   ],
   axios: {
-    host: process.env.HOST,
-    port: process.env.PORT,
-    baseUrl: process.env.NODE_ENV === 'production' ? process.env.baseUrl : undefined,
-    https: process.env.NODE_ENV === 'production'
+    baseURL: process.env.NODE_ENV === 'production' ? process.env.baseUrl : undefined
   }
 }
