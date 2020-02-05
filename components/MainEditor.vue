@@ -15,7 +15,8 @@ article.media
           :id="id"
           v-model="currentValue"
           :disabled="!user"
-          disabled-html="Please login to comment.")
+          disabled-html="Please login to comment."
+          @input="$emit('render')")
     .buttons(style="margin-left: 1rem;")
         b-button.is-success(:disabled="!user || !currentValue" @click="doPost") Post Comment
 </template>

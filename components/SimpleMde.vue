@@ -109,6 +109,9 @@ export default {
       // 实例化编辑器
       this.simplemde = new SimpleMDE(configs)
       this.simplemde.codemirror.setSize('100%', '100%')
+      if (this.value) {
+        this.simplemde.value(this.value)
+      }
 
       // 绑定事件
       this.bindingEvents()

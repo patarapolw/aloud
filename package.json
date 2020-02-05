@@ -23,6 +23,7 @@
     "dayjs": "^1.8.20",
     "dayjs-plugin-utc": "^0.1.2",
     "dompurify": "^2.0.7",
+    "escape-string-regexp": "^2.0.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",

@@ -1,7 +1,9 @@
 <template lang="pug">
 .container(style="margin-bottom: 50px;")
-  MainEditor(:id="id" @post="onPost" :reply-to="replyTo")
-  Entry(v-for="it in entries" :key="it._id" :entry="it" @reply="onReply")
+  MainEditor(:id="id" @post="onPost" :reply-to="replyTo"
+    @render="onRender")
+  Entry(v-for="it in entries" :key="it._id" :entry="it" :path="id"
+    @render="onRender" @delete="onDelete(it._id)")
 </template>
 
 <script>
@@ -43,7 +45,6 @@ export default {
       this.root.style = css`
         min-width: 500px;
         max-width: 90vw;
-        min-height: 50vh;
       `
     }
     this.fetchEntries()
@@ -63,14 +64,26 @@ export default {
         } else {
           this.hasMore = false
         }
+        this.setHeight()
       }
     },
-    onPost () {
+    async onPost () {
       this.$set(this, 'entries', [])
-      this.fetchEntries()
+      await this.fetchEntries()
     },
-    onReply (id) {
-      this.replyTo = id
+    onRender () {
+      this.setHeight()
+    },
+    setHeight () {
+      this.$nextTick(() => {
+        if (this.root) {
+          this.root.style.height = `${this.$el.scrollHeight + 100}px`
+        }
+      })
+    },
+    onDelete (id) {
+      this.$set(this, 'entries', this.entries.filter(el => el._id !== id))
+      this.setHeight()
     }
   }
 }

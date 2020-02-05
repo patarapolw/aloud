@@ -2,6 +2,7 @@ import { Router } from 'express'
 import dayjs from 'dayjs'
 import shortid from 'shortid'
 import dayjsPluginUTC from 'dayjs-plugin-utc'
+import escapeRegexp from 'escape-string-regexp'
 
 import secureMiddleware from '../middleware/secure'
 import { Post } from '../db'
@@ -22,7 +23,10 @@ postRouter.get('/:id', async (req, res, next) => {
 
 postRouter.get('/', async (req, res, next) => {
   try {
-    let cursor = Post.find({ path: req.query.path }).sort({ createdAt: -1 })
+    let cursor = Post.find({
+      path: req.query.path,
+      replyTo: req.query.replyTo
+    }).sort({ createdAt: -1 })
     if (req.query.offset) {
       cursor = cursor.skip(parseInt(req.query.offset))
     }
@@ -41,7 +45,7 @@ postRouter.get('/', async (req, res, next) => {
 postRouter.post('/:id', async (req, res, next) => {
   try {
     const post = await Post.findByIdAndUpdate(req.params.id, {
-      $set: { content: req.body.content, like: { count: 0 } }
+      $set: { content: req.body.content }
     }).exec()
     res.json(post.toJSON())
   } catch (e) {
@@ -52,7 +56,7 @@ postRouter.post('/:id', async (req, res, next) => {
 postRouter.post('/:id/like', async (req, res, next) => {
   try {
     const post = await Post.findByIdAndUpdate(req.params.id, {
-      $inc: { 'like.count': 1 }
+      $inc: { 'like.default': 1 }
     }).exec()
     res.json(post.toJSON())
   } catch (e) {
@@ -67,7 +71,11 @@ postRouter.put('/', async (req, res, next) => {
       _id,
       content: req.body.content,
       user: req.session.user,
-      path: req.body.path
+      path: req.body.path,
+      replyTo: req.body.replyTo,
+      like: {
+        default: 0
+      }
     })
     res.json({ _id })
   } catch (e) {
