@@ -58,7 +58,10 @@ export default {
       })
       this.setHeight()
 
-      const axios = this.axios.interceptors.response.use(undefined, (err) => {
+      const axios = this.axios.interceptors.response.use((config) => {
+        this.root.removeAttribute('data-error')
+        return config
+      }, (err) => {
         this.root.setAttribute('data-error', err)
         console.error(err)
         return err

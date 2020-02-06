@@ -67,8 +67,12 @@ export default {
           icon: 'github-circle',
           url: 'https://github.com/patarapolw/aloud'
         }
-      ],
-      commentUrl: '/comment?' + qs.stringify({
+      ]
+    }
+  },
+  computed: {
+    commentUrl () {
+      return '/comment?' + qs.stringify({
         path: (process.env.NODE_ENV === 'production' ? process.env.baseUrl : '') + this.$route.path
       })
     }
