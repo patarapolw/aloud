@@ -135,7 +135,7 @@ export default {
                * @type {File}
                */
               const blob = item.getAsFile()
-              if (/\.png/.test(blob.name)) {
+              if (/^image\//.test(blob.type)) {
                 const formData = new FormData()
                 formData.append('file', blob)
                 formData.append('user', this.$store.state.auth.user.email)
@@ -145,9 +145,12 @@ export default {
                 ins.getDoc().replaceRange(`Uploading from clipboard...`, start)
                 const end = ins.getCursor()
 
-                const r = await this.axios.post('/api/media/upload', formData)
-
-                ins.getDoc().replaceRange(`![${dayjs().format()}](${r.data.secure_url})`, start, end)
+                try {
+                  const r = await this.axios.post('/api/media/upload', formData)
+                  ins.getDoc().replaceRange(`![${dayjs().format()}](${r.data.secure_url})`, start, end)
+                } catch (e) {
+                  ins.getDoc().replaceRange('', start, end)
+                }
               }
             }
           }
