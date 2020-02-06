@@ -5,7 +5,7 @@ section
       p.image.avatar
         img.is-rounded(:src="getGravatarUrl(user.email)")
     .media-content(style="display: flex; flex-direction: column;")
-      div(style="flex-grow: 1")
+      div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
           simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
@@ -187,7 +187,7 @@ export default {
         const result = await this.$axios.$get('/api/post/', {
           params: {
             path: this.path,
-            offset: this.subcomments.length,
+            offset: reset ? 0 : this.subcomments.length,
             replyTo: this.replyPath
           }
         })

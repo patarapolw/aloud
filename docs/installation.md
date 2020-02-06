@@ -45,7 +45,7 @@ export default {
 
 ## Installing on your frontend
 
-Simply create an `<iframe>` with a URL looking like this.
+Simply create an `<iframe frameborder="0">` with a URL looking like this.
 
 ```js
 `${baseUrl}/comments?id=${id}`

@@ -60,7 +60,10 @@ export default {
     async fetchEntries ({ reset } = {}) {
       if (process.client) {
         const result = await this.$axios.$get('/api/post/', {
-          params: { path: this.id, offset: this.entries.length }
+          params: {
+            path: this.id,
+            offset: reset ? 0 : this.entries.length
+          }
         })
 
         this.entries = reset ? result.data : [...this.entries, ...result.data]
