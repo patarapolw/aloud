@@ -1,8 +1,8 @@
 <template lang="pug">
 .container(style="margin-bottom: 50px;")
-  MainEditor(:id="id" @post="onPost" :reply-to="replyTo"
+  MainEditor(:path="path" @post="onPost" :reply-to="replyTo"
     @render="onRender")
-  Entry(v-for="it in entries" :key="it._id" :entry="it" :path="id"
+  Entry(v-for="it in entries" :key="it._id" :entry="it" :path="path"
     @render="onRender" @delete="onDelete(it._id)")
 </template>
 
@@ -36,8 +36,8 @@ export default {
     root () {
       return process.client ? frameElement : null
     },
-    id () {
-      return this.$route.query.id
+    path () {
+      return this.$route.query.path
     }
   },
   created () {
@@ -61,7 +61,7 @@ export default {
       if (process.client) {
         const result = await this.$axios.$get('/api/post/', {
           params: {
-            path: this.id,
+            path: this.path,
             offset: reset ? 0 : this.entries.length
           }
         })

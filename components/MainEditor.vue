@@ -12,7 +12,7 @@ article.media
     .toggleable-editor-main
       client-only
         simple-mde(
-          :id="id"
+          :id="path"
           v-model="currentValue"
           :disabled="!user"
           disabled-html="Please login to comment."
@@ -30,7 +30,7 @@ export default {
     SimpleMde
   },
   props: {
-    id: {
+    path: {
       default: '',
       type: String
     },
@@ -64,7 +64,7 @@ export default {
       this.user = null
     },
     async doPost () {
-      const r = await this.$axios.$put('/api/post/', { path: this.id, content: this.currentValue })
+      const r = await this.$axios.$put('/api/post/', { path: this.path, content: this.currentValue })
       this.currentValue = ''
       this.$emit('post')
     }
