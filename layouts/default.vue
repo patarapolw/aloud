@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     commentUrl () {
-      return '/comment?' + qs.stringify({
+      return (typeof location !== 'undefined' ? location.origin : '') + '/comment?' + qs.stringify({
         id: this.$route.path
       })
     }

@@ -9,7 +9,9 @@ const PostSchema = mongoose.Schema({
   path: {
     type: String,
     validate: (p) => {
-      return new RegExp(`(${process.env.allowedUrls}|^/)`).test(p)
+      return new RegExp(`(${process.env.allowedUrls}${
+        process.env.NODE_ENV === 'development' ? '|^/' : ''
+      })`).test(p)
     },
     index: true
   }
