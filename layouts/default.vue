@@ -67,13 +67,17 @@ export default {
           icon: 'github-circle',
           url: 'https://github.com/patarapolw/aloud'
         }
-      ]
+      ],
+      commentUrl: 'about:blank'
     }
   },
-  computed: {
-    commentUrl () {
-      return (typeof location !== 'undefined' ? location.origin : '') + '/comment?' + qs.stringify({
-        id: this.$route.path
+  created () {
+    this.setCommentUrl()
+  },
+  methods: {
+    setCommentUrl () {
+      this.commentUrl = '/comment?' + qs.stringify({
+        id: (process.client ? location.origin : '') + this.$route.path
       })
     }
   }
