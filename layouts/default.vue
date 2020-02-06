@@ -68,16 +68,8 @@ export default {
           url: 'https://github.com/patarapolw/aloud'
         }
       ],
-      commentUrl: 'about:blank'
-    }
-  },
-  created () {
-    this.setCommentUrl()
-  },
-  methods: {
-    setCommentUrl () {
-      this.commentUrl = '/comment?' + qs.stringify({
-        id: (process.client ? location.origin : '') + this.$route.path
+      commentUrl: '/comment?' + qs.stringify({
+        path: (process.env.NODE_ENV === 'production' ? process.env.baseUrl : '') + this.$route.path
       })
     }
   }
