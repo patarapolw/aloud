@@ -1,5 +1,6 @@
 import createAuth0Client from '@auth0/auth0-spa-js'
 import Vue from 'vue'
+import axios from 'axios'
 
 export const state = () => ({
   client: null,
@@ -25,6 +26,16 @@ export const mutations = {
   }
 }
 
+export const getters = {
+  axios ({ token }) {
+    return axios.create({
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
+}
+
 export const actions = {
   async getClient ({ state, commit }) {
     if (state.client) {
@@ -42,7 +53,7 @@ export const actions = {
   },
   async getToken ({
     state: { client, token },
-    commit, dispatch
+    commit, dispatch, getters
   }) {
     /**
      * @type {Auth0Client}
@@ -54,14 +65,14 @@ export const actions = {
       commit('addToken', token)
 
       const user = await client.getUser()
-      await this.$axios.$post('/api/user/login', user)
+      await getters.axios.post('/api/user/login', user)
 
       commit('addUser', user)
 
       return token
     } else {
       try {
-        const r = await this.$axios.$post('/api/user/login')
+        const r = await getters.axios.post('/api/user/login')
         const user = r.data
         commit('addUser', user)
       } catch (e) {}
@@ -76,12 +87,12 @@ export const actions = {
     await dispatch('getToken')
     return state.user
   },
-  async logout ({ state, commit }) {
+  async logout ({ state, commit, getters }) {
     if (!state.token) {
       return false
     }
 
-    await this.$axios.$delete('/api/user/logout')
+    await getters.axios.delete('/api/user/logout')
 
     commit('removeUser')
     commit('removeToken')

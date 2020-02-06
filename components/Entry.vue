@@ -121,6 +121,9 @@ export default {
     },
     authUser () {
       return this.$store.state.auth.user || {}
+    },
+    axios () {
+      return this.$store.getters['auth/axios']
     }
   },
   created () {
@@ -135,7 +138,7 @@ export default {
         if (this.like['thumb-up'] && this.like['thumb-up'].includes(this.user.email)) {
           this.like['thumb-up'] = this.like['thumb-up'].filter(el => el !== this.user.email)
 
-          await this.$axios.$post(`/api/post/${this.id}/setLike`, {
+          await this.axios.post(`/api/post/${this.id}/setLike`, {
             path: this.path,
             like: this.like
           })
@@ -143,7 +146,7 @@ export default {
           this.like['thumb-up'] = this.like['thumb-up'] || []
           this.like['thumb-up'].push(this.user.email)
 
-          await this.$axios.$post(`/api/post/${this.id}/setLike`, {
+          await this.axios.post(`/api/post/${this.id}/setLike`, {
             path: this.path,
             like: this.like
           })
@@ -159,9 +162,9 @@ export default {
     async toggleEdit () {
       if (this.modelIsEdit) {
         if (this.id) {
-          await this.$axios.$post(`/api/post/${this.id}`, { content: this.value, path: this.path })
+          await this.axios.post(`/api/post/${this.id}`, { content: this.value, path: this.path })
         } else {
-          await this.$axios.$put(`/api/post/`, {
+          await this.axios.put(`/api/post/`, {
             path: this.path,
             content: this.value,
             replyTo: this.replyTo
@@ -176,7 +179,7 @@ export default {
     },
     async doDelete () {
       if (this.id) {
-        await this.$axios.$delete(`/api/post/${this.id}`, {
+        await this.axios.delete(`/api/post/${this.id}`, {
           params: { path: this.path }
         })
       }
@@ -184,13 +187,19 @@ export default {
     },
     async fetchSubcomments ({ reset } = {}) {
       if (this.$store.state.auth.token && process.client) {
-        const result = await this.$axios.$get('/api/post/', {
-          params: {
-            path: this.path,
-            offset: reset ? 0 : this.subcomments.length,
-            replyTo: this.replyPath
-          }
-        })
+        let result = null
+        try {
+          const r = await this.axios.get('/api/post/', {
+            params: {
+              path: this.path,
+              offset: reset ? 0 : this.subcomments.length,
+              replyTo: this.replyPath
+            }
+          })
+          result = r.data
+        } catch (e) {
+          return
+        }
 
         this.subcomments = reset ? result.data : [...this.subcomments, ...result.data]
         this.$set(this, 'subcomments', this.subcomments)

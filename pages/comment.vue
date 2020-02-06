@@ -38,6 +38,9 @@ export default {
     },
     path () {
       return this.$route.query.path
+    },
+    axios () {
+      return this.$store.getters['auth/axios']
     }
   },
   created () {
@@ -54,17 +57,30 @@ export default {
         this.setHeight()
       })
       this.setHeight()
+
+      const axios = this.axios.interceptors.response.use(undefined, (err) => {
+        this.root.setAttribute('data-error', err)
+        console.error(err)
+        return err
+      })
     }
   },
   methods: {
     async fetchEntries ({ reset } = {}) {
       if (process.client) {
-        const result = await this.$axios.$get('/api/post/', {
-          params: {
-            path: this.path,
-            offset: reset ? 0 : this.entries.length
-          }
-        })
+        let result = null
+        try {
+          const r = await this.axios.get('/api/post/', {
+            params: {
+              path: this.path,
+              offset: reset ? 0 : this.entries.length
+            }
+          })
+          result = r.data
+        } catch (e) {
+          console.error(e)
+          return
+        }
 
         this.entries = reset ? result.data : [...this.entries, ...result.data]
         this.$set(this, 'entries', this.entries)

@@ -58,6 +58,9 @@ export default {
         'fa-pencil',
         'fa-save'
       ].some(tag => el0.classList.contains(tag)))[0]
+    },
+    axios () {
+      return this.$store.getters['auth/axios']
     }
   },
   watch: {
@@ -137,9 +140,9 @@ export default {
               ins.getDoc().replaceRange(`Uploading from clipboard...`, start)
               const end = ins.getCursor()
 
-              const r = await this.$axios.$post('/api/media/upload', formData)
+              const r = await this.axios.post('/api/media/upload', formData)
 
-              ins.getDoc().replaceRange(`![${dayjs().format()}](${r.secure_url})`, start, end)
+              ins.getDoc().replaceRange(`![${dayjs().format()}](${r.data.secure_url})`, start, end)
             }
           }
         }

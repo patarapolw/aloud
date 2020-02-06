@@ -48,10 +48,10 @@ export default {
 Simply create an `<iframe frameborder="0">` with a URL looking like this.
 
 ```js
-`${baseUrl}/comments?id=${id}`
+`${baseUrl}/comments?path=${path}`
 ```
 
-You'll also have to make sure that your id is in the list of `allowedUrls`.
+You'll also have to make sure that your `path` is in the list of `allowedUrls`.
 
 ## Deploying to Heroku
 

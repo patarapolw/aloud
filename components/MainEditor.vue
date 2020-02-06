@@ -51,6 +51,11 @@ export default {
       getGravatarUrl
     }
   },
+  computed: {
+    axios () {
+      return this.$store.getters['auth/axios']
+    }
+  },
   watch: {
     replyTo (v) {
       this.currentValue = v ? `> Replying to @${v}\n` : ''
@@ -65,7 +70,7 @@ export default {
       this.user = null
     },
     async doPost () {
-      const r = await this.$axios.$put('/api/post/', { path: this.path, content: this.currentValue })
+      await this.axios.put('/api/post/', { path: this.path, content: this.currentValue })
       this.currentValue = ''
       this.$emit('post')
     }

@@ -3,6 +3,7 @@ import fs from 'fs'
 import { Router } from 'express'
 import cloudinary from 'cloudinary'
 import multer from 'multer'
+import sharp from 'sharp'
 
 import secureMiddleware from '../middleware/secure'
 import allowedOrigins from '../middleware/allowedOrigins'
@@ -14,6 +15,10 @@ const upload = multer({ dest: './tmp' })
 
 router.post('/upload', upload.single('file'), allowedOrigins, async (req, res, next) => {
   try {
+    await sharp(req.file.path)
+      .resize(800)
+      .toFile(req.file.path)
+
     cloudinary.v2.config({
       api_key: process.env.cloudinary_apiKey,
       api_secret: process.env.cloudinary_apiSecret,

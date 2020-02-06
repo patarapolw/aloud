@@ -36,7 +36,6 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/axios'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -53,8 +52,7 @@ export default {
   modules: [
     // Doc: https://buefy.github.io/#/documentation
     'nuxt-buefy',
-    '@nuxtjs/redirect-module',
-    '@nuxtjs/axios'
+    '@nuxtjs/redirect-module'
   ],
   /*
   ** Build configuration
@@ -82,8 +80,5 @@ export default {
   env: process.env,
   redirect: [
     { from: '^/docs/(.*)\\.md$', to: '/$1' }
-  ],
-  axios: {
-    baseURL: process.env.NODE_ENV === 'production' ? process.env.baseUrl : undefined
-  }
+  ]
 }
