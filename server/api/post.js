@@ -74,7 +74,7 @@ postRouter.post('/:id/setLike', async (req, res, next) => {
 
 postRouter.put('/', async (req, res, next) => {
   try {
-    const _id = `post-${dayjs().utc().format('YYYY-MM-DD_HHmm')}-${shortid.generate()}`
+    const _id = `post-${dayjs().utc().format('YYYYMMDD-HHmm')}-${shortid.generate()}`
     await Post.create({
       _id,
       content: req.body.content,
