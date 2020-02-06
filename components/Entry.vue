@@ -5,7 +5,7 @@ section
       p.image.avatar
         img.is-rounded(:src="getGravatarUrl(user.email)")
     .media-content(style="display: flex; flex-direction: column;")
-      div(style="min-height: 100px; flex-grow: 1")
+      div(style="flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
           simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
