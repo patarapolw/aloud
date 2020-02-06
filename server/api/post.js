@@ -38,7 +38,7 @@ postRouter.get('/', async (req, res, next) => {
     if (req.query.offset) {
       cursor = cursor.skip(parseInt(req.query.offset))
     }
-    cursor = cursor.limit(parseInt(req.query.limit) || 5)
+    // cursor = cursor.limit(parseInt(req.query.limit) || 5)
 
     const posts = await cursor.exec()
     res.json({
