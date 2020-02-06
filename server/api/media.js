@@ -9,11 +9,10 @@ import allowedOrigins from '../middleware/allowedOrigins'
 
 const router = Router()
 router.use(secureMiddleware)
-router.use(allowedOrigins)
 
 const upload = multer({ dest: './tmp' })
 
-router.post('/upload', upload.single('file'), async (req, res, next) => {
+router.post('/upload', upload.single('file'), allowedOrigins, async (req, res, next) => {
   try {
     cloudinary.v2.config({
       api_key: process.env.cloudinary_apiKey,
