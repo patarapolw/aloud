@@ -102,7 +102,10 @@ export default {
       return this.replyPath.split('/').length
     },
     pastDuration () {
-      return humanizeDuration((+new Date()) - (+new Date(this.entry.createdAt)), { maxDecimalPoints: 0 })
+      return humanizeDuration((+new Date()) - (+new Date(this.entry.createdAt)), {
+        round: true,
+        largest: 2
+      })
     },
     html () {
       this.$nextTick(() => {
