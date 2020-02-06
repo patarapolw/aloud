@@ -20,6 +20,10 @@ export default {
       type: String,
       default: ''
     },
+    path: {
+      type: String,
+      required: true
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -127,6 +131,7 @@ export default {
               const formData = new FormData()
               formData.append('file', blob)
               formData.append('user', this.$store.state.auth.user.email)
+              formData.append('path', this.path)
 
               const start = ins.getCursor()
               ins.getDoc().replaceRange(`Uploading from clipboard...`, start)

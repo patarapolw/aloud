@@ -8,7 +8,7 @@ section
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
-          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
+          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id" :path="path")
       small
         span(v-if="isAuthorized && id")
           span(:key="likeKey")

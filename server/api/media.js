@@ -5,9 +5,11 @@ import cloudinary from 'cloudinary'
 import multer from 'multer'
 
 import secureMiddleware from '../middleware/secure'
+import allowedOrigins from '../middleware/allowedOrigins'
 
 const router = Router()
 router.use(secureMiddleware)
+router.use(allowedOrigins)
 
 const upload = multer({ dest: './tmp' })
 

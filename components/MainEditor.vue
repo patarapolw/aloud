@@ -13,6 +13,7 @@ article.media
       client-only
         simple-mde(
           :id="path"
+          :path="path"
           v-model="currentValue"
           :disabled="!user"
           disabled-html="Please login to comment."
