@@ -18,7 +18,7 @@ For more, see [Markdown Guide](/docs/guide.md).
 
 ## Troubleshooting
 
-Profile images are powered by [Gravatar](https://en.gravatar.com/). Try upload an avatar there, if your image isn't shown.
+Profile images are powered by [Gravatar](https://gravatar.com/). Try upload an avatar there, if your image isn't shown.
 
 ## Installation
 
