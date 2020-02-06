@@ -18,7 +18,8 @@ This is powered by Express.js (on Node.js), and is tested on Yarn.
 export default {
   baseUrl: 'https://aloud-comments.herokuapp.com',
   allowedUrls: [
-    '://aloud-comments\.herokuapp\.com'
+    '^https?://aloud-comments\\.herokuapp\\.com',
+    '^https?://patarapolw\\.github\\.io'
   ],
   session: {
     secret: '<GENERATE IT YOURSELF>'

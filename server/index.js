@@ -5,6 +5,7 @@ import expressWinston from 'express-winston'
 import connectMongo from 'connect-mongo'
 import mongoose from 'mongoose'
 import enforce from 'express-sslify'
+import winston from 'winston'
 
 import config from '../nuxt.config'
 import apiRouter from './api'
@@ -50,11 +51,24 @@ async function start () {
   app.enable('trust proxy')
 
   app.use(expressWinston.logger({
-    winstonInstance: logger,
+    transports: [
+      new winston.transports.Console()
+    ],
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.timestamp(),
+      winston.format.printf(({ timestamp, level, message, meta }) => {
+        return `[${timestamp.replace('T', ' ')}] ${level}: ${message} ${
+          meta.res ? meta.res.statusCode : ''
+        } ${meta.responseTime}ms ${
+          (meta.req && meta.req.body) ? JSON.stringify(meta.req.body) : ''
+        }`
+      })
+    ),
     ignoreRoute (req) {
       return req.url.startsWith('/_')
     },
-    expressFormat: true
+    requestWhitelist: ['body']
   }))
 
   app.use(session({

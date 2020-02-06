@@ -61,12 +61,12 @@ postRouter.post('/:id', async (req, res, next) => {
   }
 })
 
-postRouter.post('/:id/like', async (req, res, next) => {
+postRouter.post('/:id/setLike', async (req, res, next) => {
   try {
-    const post = await Post.findByIdAndUpdate(req.params.id, {
-      $inc: { 'like.default': 1 }
+    await Post.findByIdAndUpdate(req.params.id, {
+      $set: { like: req.body.like }
     }).exec()
-    res.json(post.toJSON())
+    res.sendStatus(201)
   } catch (e) {
     next(e)
   }
@@ -81,9 +81,7 @@ postRouter.put('/', async (req, res, next) => {
       user: req.session.user,
       path: req.body.path,
       replyTo: req.body.replyTo,
-      like: {
-        default: 0
-      }
+      like: {}
     })
     res.json({ _id })
   } catch (e) {

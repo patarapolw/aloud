@@ -10,17 +10,21 @@ section
         client-only(v-else)
           simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
       small
-        span(v-if="isAuthorized && !isYou")
-          a(@click="doLike") Like
-          span {{' · '}}
         span(v-if="isAuthorized && id")
-          a(@click="doReply") Reply
+          span(:key="likeKey")
+            a(role="button" @click="toggleLike")
+              | {{like['thumb-up'] && like['thumb-up'].includes(user.email) ? 'Unlike' : 'Like'}}
+            span(v-if="like['thumb-up'] && like['thumb-up'].length > 0")
+              b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
+              span {{like['thumb-up'].length}}
+            span {{' · '}}
+          a(role="button" @click="doReply") Reply
           span {{' · '}}
         span(v-if="isAuthorized && isYou")
-          a(@click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
+          a(role="button" @click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
           span {{' · '}}
         span(v-if="isAuthorized && isYou")
-          a(@click="doDelete") Delete
+          a(role="button" @click="doDelete") Delete
           span {{' · '}}
         span Posted by {{user.nickname}}
         span {{' · '}}
@@ -68,15 +72,17 @@ export default {
     }
   },
   data () {
+    const like = this.entry.like || {}
     return {
       getGravatarUrl,
       makehtml: null,
-      likes: this.entry.like || {},
+      like,
       modelIsEdit: this.isEdit,
       hasReply: false,
       value: this.entry.content || '',
       subcomments: [],
-      hasMore: false
+      hasMore: false,
+      likeKey: JSON.stringify(like['thumb-up'])
     }
   },
   computed: {
@@ -124,13 +130,26 @@ export default {
     }
   },
   methods: {
-    async doLike () {
+    async toggleLike () {
       if (this.id) {
-        await this.$axios.$put(`/api/post/${this.id}/like`, { path: this.path })
-        this.$set(this.like, 'default', this.like.default || 0)
-        this.$nextTick(() => {
-          this.like.default++
-        })
+        if (this.like['thumb-up'] && this.like['thumb-up'].includes(this.user.email)) {
+          this.like['thumb-up'] = this.like['thumb-up'].filter(el => el !== this.user.email)
+
+          await this.$axios.$post(`/api/post/${this.id}/setLike`, {
+            path: this.path,
+            like: this.like
+          })
+        } else {
+          this.like['thumb-up'] = this.like['thumb-up'] || []
+          this.like['thumb-up'].push(this.user.email)
+
+          await this.$axios.$post(`/api/post/${this.id}/setLike`, {
+            path: this.path,
+            like: this.like
+          })
+        }
+        this.$set(this.like, 'thumb-up', this.like['thumb-up'])
+        this.likeKey = JSON.stringify(this.like['thumb-up'])
       }
     },
     doReply () {
@@ -163,7 +182,7 @@ export default {
       }
       this.$emit('delete')
     },
-    async fetchSubcomments () {
+    async fetchSubcomments ({ reset } = {}) {
       if (this.$store.state.auth.token && process.client) {
         const result = await this.$axios.$get('/api/post/', {
           params: {
@@ -173,7 +192,7 @@ export default {
           }
         })
 
-        this.subcomments = [...this.subcomments, ...result.data]
+        this.subcomments = reset ? result.data : [...this.subcomments, ...result.data]
         this.$set(this, 'subcomments', this.subcomments)
 
         if (this.subcomments.length < result.count) {
@@ -186,7 +205,7 @@ export default {
     },
     async onPost () {
       this.$set(this, 'subcomments', [])
-      await this.fetchSubcomments()
+      await this.fetchSubcomments({ reset: true })
     },
     onDelete (id) {
       this.$set(this, 'subcomments', this.subcomments.filter(el => el._id !== id))

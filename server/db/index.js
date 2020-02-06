@@ -4,7 +4,7 @@ const PostSchema = mongoose.Schema({
   _id: String,
   content: { type: String, required: true },
   user: { type: mongoose.SchemaTypes.Mixed, required: true },
-  like: { type: mongoose.SchemaTypes.Mixed, default: () => ({ default: 0 }) },
+  like: { type: mongoose.SchemaTypes.Mixed, default: () => ({}) },
   replyTo: { type: String, index: true },
   path: {
     type: String,

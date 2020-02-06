@@ -57,13 +57,13 @@ export default {
     }
   },
   methods: {
-    async fetchEntries () {
+    async fetchEntries ({ reset } = {}) {
       if (process.client) {
         const result = await this.$axios.$get('/api/post/', {
           params: { path: this.id, offset: this.entries.length }
         })
 
-        this.entries = [...this.entries, ...result.data]
+        this.entries = reset ? result.data : [...this.entries, ...result.data]
         this.$set(this, 'entries', this.entries)
 
         if (this.entries.length < result.count) {
@@ -75,8 +75,7 @@ export default {
       }
     },
     async onPost () {
-      this.$set(this, 'entries', [])
-      await this.fetchEntries()
+      await this.fetchEntries({ reset: true })
     },
     onRender () {
       this.setHeight()
