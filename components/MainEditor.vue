@@ -1,7 +1,7 @@
 <template lang="pug">
 article.media
   figure.media-left(style="text-align: center;")
-    p.image.is-96x96(style="margin-top: 1rem;")
+    p.image.avatar(style="margin-top: 1rem;")
       b-tooltip(v-if="user" :label="'Logged in as ' + user.nickname + '. Click to logout'" position="is-right")
         img.is-rounded.cursor-pointer(:src="getGravatarUrl(user.email)" :alt="user.given_name"
           @click="doLogout" role="button")
@@ -80,6 +80,10 @@ export default {
 .toggleable-editor-main {
   margin: 10px;
   height: 200px;
+
+  @media screen and (max-width: 600px) {
+    height: 300px;
+  }
 }
 
 .cursor-pointer {

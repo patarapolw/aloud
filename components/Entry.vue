@@ -2,13 +2,13 @@
 section
   article.media(style="margin-top: 1rem;")
     figure.media-left(style="text-align: center;")
-      p.is-96x96
-        img.is-rounded(:src="getGravatarUrl(user.email)" style="border-radius: 50%;")
+      p.image.avatar
+        img.is-rounded(:src="getGravatarUrl(user.email)")
     .media-content(style="display: flex; flex-direction: column;")
       div(style="min-height: 100px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
-          simple-mde(v-model="value" style="height: 200px;" @init="$emit('render')" :id="id")
+          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
       small
         span(v-if="isAuthorized && !isYou")
           a(@click="doLike") Like
@@ -195,3 +195,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.reply-editor {
+  margin: 10px;
+  height: 200px;
+
+  @media screen and (max-width: 600px) {
+    height: 300px;
+  }
+}
+</style>

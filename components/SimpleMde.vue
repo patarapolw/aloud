@@ -246,10 +246,12 @@ export default {
   flex-direction: column;
   height: 100%;
 }
+
 .CodeMirror {
   flex-grow: 1;
   min-height: auto;
 }
+
 .CodeMirror-scroll {
   min-height: unset;
 }

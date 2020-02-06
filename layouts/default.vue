@@ -83,7 +83,12 @@ export default {
 <style lang="scss">
 .comment-iframe {
   width: 80%;
-  min-width: 500px;
+}
+
+@media only screen and (max-width: 770px) {
+  .comment-iframe {
+    width: 100%;
+  }
 }
 
 pre code {

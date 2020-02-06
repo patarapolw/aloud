@@ -43,7 +43,6 @@ export default {
   created () {
     if (this.root) {
       this.root.style = css`
-        min-width: 500px;
         max-width: 90vw;
       `
     }
@@ -98,7 +97,12 @@ export default {
 </script>
 
 <style lang="scss">
-textarea {
-  font-family: 'Courier New', Courier, monospace;
+.image.avatar {
+  height: auto;
+  width: 96px;
+
+  @media screen and (max-width: 600px) {
+    width: 15vw;
+  }
 }
 </style>
