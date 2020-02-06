@@ -15,6 +15,10 @@ const upload = multer({ dest: './tmp' })
 
 router.post('/upload', upload.single('file'), allowedOrigins, async (req, res, next) => {
   try {
+    if (!/\.png$/.test(req.file.name)) {
+      throw new Error('Not a PNG image')
+    }
+
     await sharp(req.file.path)
       .resize(800)
       .toFile(req.file.path)

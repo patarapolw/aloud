@@ -130,19 +130,25 @@ export default {
             const item = items[k]
             if (item.kind === 'file') {
               evt.preventDefault()
+
+              /**
+               * @type {File}
+               */
               const blob = item.getAsFile()
-              const formData = new FormData()
-              formData.append('file', blob)
-              formData.append('user', this.$store.state.auth.user.email)
-              formData.append('path', this.path)
+              if (/\.png/.test(blob.name)) {
+                const formData = new FormData()
+                formData.append('file', blob)
+                formData.append('user', this.$store.state.auth.user.email)
+                formData.append('path', this.path)
 
-              const start = ins.getCursor()
-              ins.getDoc().replaceRange(`Uploading from clipboard...`, start)
-              const end = ins.getCursor()
+                const start = ins.getCursor()
+                ins.getDoc().replaceRange(`Uploading from clipboard...`, start)
+                const end = ins.getCursor()
 
-              const r = await this.axios.post('/api/media/upload', formData)
+                const r = await this.axios.post('/api/media/upload', formData)
 
-              ins.getDoc().replaceRange(`![${dayjs().format()}](${r.data.secure_url})`, start, end)
+                ins.getDoc().replaceRange(`![${dayjs().format()}](${r.data.secure_url})`, start, end)
+              }
             }
           }
         }
