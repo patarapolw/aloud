@@ -13,6 +13,7 @@ import { logger, flattenConfig } from './utils'
 
 async function start () {
   Object.entries(flattenConfig()).map(([k, v]) => { process.env[k] = process.env[k] || v })
+  process.env.allowedUrls = process.env.allowedUrls ? `${process.env.allowedUrls}|${process.env.baseUrl}` : process.env.baseUrl
 
   const MongoStore = connectMongo(session)
 
