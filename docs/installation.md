@@ -12,31 +12,30 @@ This is powered by Express.js (on Node.js), and is tested on Yarn.
 ## Instructions
 
 - Clone this project
-- Create `./aloud.config.js` with the settings look like this
+- Create `./aloud.config.json` with the settings look like this
 
-```js
-export default {
-  baseUrl: 'https://aloud-comments.herokuapp.com',
-  allowedUrls: [
-    '^https?://aloud-comments\\.herokuapp\\.com',
-    '^https?://patarapolw\\.github\\.io'
+```json
+{
+  "baseUrl": "https://aloud-comments.herokuapp.com",
+  "allowedUrls": [
+    "^https?://patarapolw\\.github\\.io"
   ],
-  session: {
-    secret: '<GENERATE IT YOURSELF>'
+  "session": {
+    "secret": "<GENERATE_IT_YOURSELF>"
   },
-  auth0: {
-    clientId: '<GET THIS FROM AUTH0>',
-    domain: '<GET THIS FROM AUTH0>',
-    secret: '<GET THIS FROM AUTH0>'
+  "auth0": {
+    "clientId": "<GET_THIS_FROM_AUTH0>",
+    "domain": "<GET_THIS_FROM_AUTH0>",
+    "secret": "<GET_THIS_FROM_AUTH0>",
   },
-  mongo: {
-    uri: '<GET THIS FROM MONGODB>'
+  "mongo": {
+    "uri": "<GET_THIS_FROM_MONGODB_ATLAS_OR_HOST_IT_YOURSELF>",
   },
-  cloudinary: {
-    cloudName: '<GET THIS FROM CLOUDINARY>',
-    apiKey: '<GET THIS FROM CLOUDINARY>',
-    apiSecret: '<GET THIS FROM CLOUDINARY>',
-    folder: 'aloud'
+  "cloudinary": {
+    "cloudName": "<GET_THIS_FROM_CLOUDINARY>",
+    "apiKey": "<GET_THIS_FROM_CLOUDINARY>",
+    "apiSecret": "<GET_THIS_FROM_CLOUDINARY>",
+    "folder": "aloud"
   }
 }
 ```
@@ -45,7 +44,7 @@ export default {
 
 ## Installing on your frontend
 
-Simply create an `<iframe frameborder="0">` with a URL looking like this.
+Simply create an `<iframe frameborder="0" sandbox="allow-scripts allow-popups">` with a URL looking like this.
 
 ```js
 `${baseUrl}/comments?path=${path}`
@@ -55,5 +54,5 @@ You'll also have to make sure that your `path` is in the list of `allowedUrls`.
 
 ## Deploying to Heroku
 
-- Push secrets to Heroku with `node ./push-secrets.js`
+- Push secrets to Heroku with `node heroku/push-secrets.js`
 - Now, you can `git push heroku master` as usual.

@@ -22,11 +22,11 @@ export const logger = winston.createLogger({
  */
 export function flattenConfig (blacklist = []) {
   try {
-    return flattenObject(require('../../aloud.config').default, blacklist)
+    return flattenObject(require('../../aloud.config.json'), blacklist)
   } catch (e) {
     if (process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line no-console
-      console.log('Cannot find aloud.config.js')
+      console.error('Cannot find aloud.config.js')
     }
   }
   return {}

@@ -90,4 +90,4 @@ sw.*
 *.swp
 
 # Aloud config files
-aloud.config.js
+aloud.config.json

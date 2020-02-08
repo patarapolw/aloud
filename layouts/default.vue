@@ -73,7 +73,8 @@ export default {
   computed: {
     commentUrl () {
       return '/comment?' + qs.stringify({
-        path: (process.env.NODE_ENV === 'production' ? process.env.baseUrl : '') + this.$route.path
+        // path: (typeof window !== 'undefined' ? location.origin : process.env.baseUrl) + this.$route.path
+        path: process.env.baseUrl + this.$route.path
       })
     }
   }

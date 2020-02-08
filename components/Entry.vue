@@ -10,16 +10,17 @@ section
         client-only(v-else)
           simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id" :path="path")
       small
-        span(v-if="isAuthorized && id")
+        span(v-if="id")
           span(:key="likeKey")
-            a(role="button" @click="toggleLike")
+            a(role="button" @click="toggleLike" v-if="isAuthorized")
               | {{like['thumb-up'] && like['thumb-up'].includes(user.email) ? 'Unlike' : 'Like'}}
             span(v-if="like['thumb-up'] && like['thumb-up'].length > 0")
               b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
               span {{like['thumb-up'].length}}
+            span(v-if="isAuthorized || like['thumb-up']") {{' · '}}
+          span(v-if="isAuthorized")
+            a(role="button" @click="doReply") Reply
             span {{' · '}}
-          a(role="button" @click="doReply") Reply
-          span {{' · '}}
         span(v-if="isAuthorized && isYou")
           a(role="button" @click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
           span {{' · '}}
@@ -117,10 +118,10 @@ export default {
         : ''
     },
     user () {
-      return this.entry.user ? this.entry.user
+      return (this.entry.user ? this.entry.user
         : this.replyTo
           ? this.authUser
-          : {}
+          : null) || {}
     },
     authUser () {
       return this.$store.state.auth.user || {}
@@ -189,7 +190,7 @@ export default {
       this.$emit('delete')
     },
     async fetchSubcomments ({ reset } = {}) {
-      if (this.$store.state.auth.token && process.client) {
+      if (process.client) {
         let result = null
         try {
           const r = await this.axios.get('/api/post/', {
