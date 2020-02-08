@@ -1,14 +1,17 @@
 /* eslint-disable no-global-assign */
 require = require('esm')(module)
-const { execSync } = require('child_process')
+const { execSync, spawnSync } = require('child_process')
 
-const { pour } = require('pour-console')
+const setRemote = process.env.REMOTE ? `--remote ${process.env.REMOTE}` : ''
 
-const setRemote = process.env.REMOTE ? `--remote ${process.env.REMOTE}` : '';
+const envKeys = execSync(`heroku config ${setRemote}`).toString().trim().split('\n')
+  .filter(row => row.includes(':')).map(row => row.split(':')[0])
 
-(async () => {
-  const envKeys = execSync(`heroku config ${setRemote}`).toString().trim().split('\n')
-    .filter(row => row.includes(':')).map(row => row.split(':')[0])
-
-  await pour(`heroku config:unset ${envKeys.join(' ')} ${setRemote}`)
-})().catch(console.error).then(() => process.exit())
+spawnSync('heroku', [
+  'config:unset',
+  ...envKeys,
+  ...(process.env.REMOTE ? [
+    '--remote',
+    process.env.REMOTE
+  ] : [])
+])
