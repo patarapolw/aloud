@@ -18,6 +18,6 @@ module.exports = {
     'no-return-await': 0,
     'no-lonely-if': 0,
     'import/order': 0,
-    'no-console': ["error", { allow: ["warn", "error"] }]
+    'no-console': ["warn", { allow: ["warn", "error"] }],
   }
 }

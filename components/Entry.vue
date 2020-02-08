@@ -8,7 +8,7 @@ section
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
-          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id" :path="path")
+          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
       small
         span(v-if="id")
           span(:key="likeKey")
@@ -31,14 +31,14 @@ section
         span {{' · '}}
         span {{ pastDuration }} ago
       section(v-if="replyDepth < 3")
-        Entry(v-if="hasReply" :reply-to="replyPath" is-edit :path="path"
+        Entry(v-if="hasReply" :reply-to="replyPath" is-edit
           @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-        Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath" :path="path"
+        Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath"
             :entry="it" @render="$emit('render')" @delete="onDelete(it._id)")
   section(v-if="replyDepth >= 3")
-    Entry(v-if="hasReply" :reply-to="replyPath" is-edit :path="path"
+    Entry(v-if="hasReply" :reply-to="replyPath" is-edit
         @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-    Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath" :path="path"
+    Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath"
         :entry="it" @render="$emit('render')" @delete="onDelete(it._id)")
 </template>
 
@@ -66,10 +66,6 @@ export default {
     replyTo: {
       type: String,
       default: ''
-    },
-    path: {
-      type: String,
-      required: true
     }
   },
   data () {
@@ -143,7 +139,6 @@ export default {
           this.like['thumb-up'] = this.like['thumb-up'].filter(el => el !== this.user.email)
 
           await this.axios.post(`/api/post/${this.id}/setLike`, {
-            path: this.path,
             like: this.like
           })
         } else {
@@ -151,7 +146,6 @@ export default {
           this.like['thumb-up'].push(this.user.email)
 
           await this.axios.post(`/api/post/${this.id}/setLike`, {
-            path: this.path,
             like: this.like
           })
         }
@@ -166,10 +160,9 @@ export default {
     async toggleEdit () {
       if (this.modelIsEdit) {
         if (this.id) {
-          await this.axios.post(`/api/post/${this.id}`, { content: this.value, path: this.path })
+          await this.axios.post(`/api/post/${this.id}`, { content: this.value })
         } else {
           await this.axios.put(`/api/post/`, {
-            path: this.path,
             content: this.value,
             replyTo: this.replyTo
           })
@@ -183,9 +176,7 @@ export default {
     },
     async doDelete () {
       if (this.id) {
-        await this.axios.delete(`/api/post/${this.id}`, {
-          params: { path: this.path }
-        })
+        await this.axios.delete(`/api/post/${this.id}`)
       }
       this.$emit('delete')
     },
@@ -195,7 +186,6 @@ export default {
         try {
           const r = await this.axios.get('/api/post/', {
             params: {
-              path: this.path,
               offset: reset ? 0 : this.subcomments.length,
               replyTo: this.replyPath
             }

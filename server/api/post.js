@@ -32,7 +32,7 @@ postRouter.get('/:id', async (req, res, next) => {
 postRouter.get('/', async (req, res, next) => {
   try {
     let cursor = Post.find({
-      path: req.query.path,
+      path: req.headers['x-aloud-path'],
       replyTo: req.query.replyTo
     }).sort({ createdAt: -1 })
     if (req.query.offset) {
@@ -74,12 +74,12 @@ postRouter.post('/:id/setLike', async (req, res, next) => {
 
 postRouter.put('/', async (req, res, next) => {
   try {
-    const _id = `post-${dayjs().utc().format('YYYYMMDD-HHmm')}-${shortid.generate()}`
+    const _id = `post-${dayjs().utc().format('YYYYMMDD-HHmmSS')}-${shortid.generate()}`
     await Post.create({
       _id,
       content: req.body.content,
       user: req.session.user,
-      path: req.body.path,
+      path: req.headers['x-aloud-path'],
       replyTo: req.body.replyTo,
       like: {}
     })

@@ -1,8 +1,7 @@
 <template lang="pug">
 .container(style="margin-bottom: 50px;")
-  MainEditor(:path="path" @post="onPost" :reply-to="replyTo"
-    @render="onRender")
-  Entry(v-for="it in entries" :key="it._id" :entry="it" :path="path"
+  MainEditor(@post="onPost" @render="onRender")
+  Entry(v-for="it in entries" :key="it._id" :entry="it"
     @render="onRender" @delete="onDelete(it._id)")
 </template>
 
@@ -28,16 +27,12 @@ export default {
   data () {
     return {
       entries: [],
-      hasMore: false,
-      replyTo: ''
+      hasMore: false
     }
   },
   computed: {
     root () {
       return process.client ? frameElement : null
-    },
-    path () {
-      return this.$route.query.path
     },
     axios () {
       return this.$store.getters['auth/axios']
@@ -49,6 +44,7 @@ export default {
         max-width: 90vw;
       `
     }
+    this.$store.commit('auth/addPath', this.$route.query.path)
     this.fetchEntries()
   },
   mounted () {
@@ -75,7 +71,6 @@ export default {
         try {
           const r = await this.axios.get('/api/post/', {
             params: {
-              path: this.path,
               offset: reset ? 0 : this.entries.length
             }
           })

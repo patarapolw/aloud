@@ -5,7 +5,8 @@ import axios from 'axios'
 export const state = () => ({
   client: null,
   token: null,
-  user: null
+  user: null,
+  path: null
 })
 
 export const mutations = {
@@ -23,14 +24,18 @@ export const mutations = {
   },
   removeUser (state) {
     state.user = null
+  },
+  addPath (state, path) {
+    state.path = path
   }
 }
 
 export const getters = {
-  axios ({ token }) {
+  axios ({ token, path }) {
     return axios.create({
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: token ? `Bearer ${token}` : undefined,
+        'X-Aloud-Path': path
       }
     })
   }
