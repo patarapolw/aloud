@@ -24,7 +24,7 @@ div
     .container.column.is-10
       nuxt
       .container(style="text-align: center;")
-        iframe.comment-iframe(:src="commentUrl" frameborder="0")
+        iframe.comment-iframe(:src="commentUrl" frameborder="0" sandbox="allow-scripts allow-popups allow-same-origin")
 </template>
 
 <script>

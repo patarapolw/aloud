@@ -44,7 +44,7 @@ This is powered by Express.js (on Node.js), and is tested on Yarn.
 
 ## Installing on your frontend
 
-Simply create an `<iframe frameborder="0" sandbox="allow-scripts allow-popups">` with a URL looking like this.
+Simply create an `<iframe frameborder="0" sandbox="allow-scripts allow-popups allow-same-origin">` with a URL looking like this.
 
 ```js
 `${baseUrl}/comments?path=${path}`
