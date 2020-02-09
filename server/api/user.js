@@ -1,7 +1,9 @@
 import { Router } from 'express'
 import secureMiddleware from '../middleware/secure'
+import allowedOrigins from '../middleware/allowedOrigins'
 
 const userRouter = Router()
+userRouter.use(allowedOrigins)
 // userRouter.use(secureMiddleware)
 
 userRouter.get('/', secureMiddleware, (req, res) => {

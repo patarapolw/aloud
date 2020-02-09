@@ -14,7 +14,7 @@ const upload = multer({ dest: './tmp' })
 
 router.post('/upload', upload.single('file'), allowedOrigins, async (req, res, next) => {
   try {
-    if (!/^image\//.test(req.file.mimetype)) {
+    if (!req.file.mimetype.startsWith('image/')) {
       throw new Error('Not an image')
     }
 
@@ -31,7 +31,10 @@ router.post('/upload', upload.single('file'), allowedOrigins, async (req, res, n
     const r = await cloudinary.v2.uploader.upload(`${req.file.path}-reized`, {
       folder: process.env.cloudinary_folder,
       use_filename: false,
-      context: req.body
+      context: {
+        ...req.body,
+        path: req.headers['x-aloud-path']
+      }
     })
 
     rimraf.sync(`${req.file.path}*`)
