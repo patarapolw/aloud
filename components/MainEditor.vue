@@ -29,31 +29,16 @@ export default {
   components: {
     SimpleMde
   },
-  props: {
-    value: {
-      default: '',
-      type: String
-    },
-    replyTo: {
-      default: '',
-      type: String
-    }
-  },
   data () {
     return {
       user: this.$store.state.auth.user,
-      currentValue: this.value,
+      currentValue: '',
       getGravatarUrl
     }
   },
   computed: {
     axios () {
       return this.$store.getters['auth/axios']
-    }
-  },
-  watch: {
-    replyTo (v) {
-      this.currentValue = v ? `> Replying to @${v}\n` : ''
     }
   },
   methods: {
