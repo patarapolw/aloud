@@ -1,64 +1,111 @@
 <template lang="pug">
 article.media
-  figure.media-left(style="text-align: center;")
+  figure.media-left(style="text-align: center; position: relative;")
+    .popup(ref="login" v-show="isLoggingIn")
     p.image.avatar(style="margin-top: 1rem;")
-      b-tooltip(v-if="user" :label="'Logged in as ' + user.nickname + '. Click to logout'" position="is-right")
+      b-tooltip(v-if="user" :label="'Logged in as ' + (user.displayName || 'Anonymous') + '. Click to logout'" position="is-right")
         img.is-rounded.cursor-pointer(:src="getGravatarUrl(user.email)" :alt="user.given_name"
           @click="doLogout" role="button")
       b-tooltip(v-else label="Click to login" position="is-right")
         img.is-rounded.cursor-pointer(:src="getGravatarUrl()"
-          @click="doLogin" role="button")
+          @click="isLoggingIn = true" role="button")
   .media-content
     .toggleable-editor-main
-      client-only
-        simple-mde(
-          :id="$route.query.path"
+      client-only(v-if="user")
+        SimpleMde(
           v-model="currentValue"
-          :disabled="!user"
-          disabled-html="Please login to comment."
-          @input="$emit('render')")
+          @init="$emit('render')")
+      b-input(v-else type="textarea" disabled placeholder="Please login to comment.")
     .buttons(style="margin-left: 1rem;")
         b-button.is-success(:disabled="!user || !currentValue" @click="doPost") Post Comment
 </template>
 
-<script>
-import SimpleMde from './SimpleMde'
-import { getGravatarUrl } from '@/assets/utils'
+<script lang="ts">
+import { Vue, Component, Emit, Watch } from 'nuxt-property-decorator'
+import SimpleMde from './SimpleMde.vue'
+import { getGravatarUrl } from '@/assets/util'
+import { g } from '@/assets/schema'
 
-export default {
+import 'firebaseui/dist/firebaseui.css'
+
+@Component({
   components: {
     SimpleMde
-  },
-  data () {
-    return {
-      user: this.$store.state.auth.user,
-      currentValue: '',
-      getGravatarUrl
+  }
+})
+export default class MainEditor extends Vue {
+  currentValue = ''
+  getGravatarUrl = getGravatarUrl
+  isLoggingIn = false
+  authUI: any = null
+
+  get user() {
+    return this.$store.state.user
+  }
+
+  @Watch('isLoggingIn')
+  async doLogin() {
+    if (process.client) {
+      const { login } = this.$refs as any
+      const { auth } = await import('firebaseui')
+      this.authUI =
+        this.authUI ||
+        auth.AuthUI.getInstance() ||
+        new auth.AuthUI(this.$fireAuth)
+      this.authUI.start(login, {
+        signInFlow: 'popup',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          this.$fireAuthObj.GoogleAuthProvider.PROVIDER_ID,
+          // this.$fireAuthObj.FacebookAuthProvider.PROVIDER_ID,
+          // this.$fireAuthObj.TwitterAuthProvider.PROVIDER_ID,
+          // this.$fireAuthObj.GithubAuthProvider.PROVIDER_ID,
+          this.$fireAuthObj.EmailAuthProvider.PROVIDER_ID,
+          // this.$fireAuthObj.PhoneAuthProvider.PROVIDER_ID,
+          auth.AnonymousAuthProvider.PROVIDER_ID
+        ],
+        callbacks: {
+          signInSuccessWithAuthResult: (r: any) => {
+            this.$store.dispatch('login', r.user)
+            this.isLoggingIn = false
+            return true
+          }
+        }
+      })
+
+      const onClickOutside = (evt: any) => {
+        const { login } = this.$refs as any
+        if (login && !login.contains(evt.target)) {
+          this.isLoggingIn = false
+        }
+        this.$el.removeEventListener('click', onClickOutside)
+      }
+
+      this.$el.addEventListener('click', onClickOutside)
     }
-  },
-  computed: {
-    axios () {
-      return this.$store.getters['auth/axios']
-    }
-  },
-  methods: {
-    async doLogin () {
-      this.user = await this.$store.dispatch('auth/login')
-    },
-    async doLogout () {
-      await this.$store.dispatch('auth/logout')
-      this.user = null
-    },
-    async doPost () {
-      await this.axios.put('/api/post/', { content: this.currentValue })
-      this.currentValue = ''
-      this.$emit('post')
-    }
+  }
+
+  async doLogout() {
+    await this.$fireAuth.signOut()
+    this.$store.dispatch('logout')
+  }
+
+  @Emit('post')
+  async doPost() {
+    await g.stitch!.create({
+      content: this.currentValue,
+      path: null,
+      like: {
+        'thumb-up': []
+      }
+    })
+
+    this.currentValue = ''
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .preview {
   background-color: #fcf2d4;
 }
@@ -68,11 +115,21 @@ export default {
   height: 200px;
 
   @media screen and (max-width: 600px) {
-    height: 300px;
+    height: 250px;
   }
 }
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  z-index: 100;
+  left: 50%;
+  top: 1em;
+  width: 250px;
 }
 </style>

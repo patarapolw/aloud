@@ -8,212 +8,200 @@ section
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         client-only(v-else)
-          simple-mde.reply-editor(v-model="value" @init="$emit('render')" :id="id")
+          SimpleMde.reply-editor(v-model="value" @init="$emit('render')")
       small
-        span(v-if="id")
-          span(:key="likeKey")
-            a(role="button" @click="toggleLike" v-if="isAuthorized")
-              | {{like['thumb-up'] && like['thumb-up'].includes(user.email) ? 'Unlike' : 'Like'}}
-            span(v-if="like['thumb-up'] && like['thumb-up'].length > 0")
-              b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
-              span {{like['thumb-up'].length}}
-            span(v-if="isAuthorized || like['thumb-up']") {{' · '}}
-          span(v-if="isAuthorized")
-            a(role="button" @click="doReply") Reply
-            span {{' · '}}
-        span(v-if="isAuthorized && isYou")
+        span(v-if="entry")
+          a(role="button" @click="toggleLike" v-if="isYours(entry)")
+            | {{entry.like['thumb-up'].includes(user.email) ? 'Unlike' : 'Like'}}
+          span(v-if="entry.like['thumb-up'].length > 0")
+            b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
+            span {{entry.like['thumb-up'].length}}
+          span(v-if="user || entry.like['thumb-up']") {{' · '}}
+        span(v-if="entry && user")
+          a(role="button" @click="doReply") Reply
+          span {{' · '}}
+        span(v-if="!entry || (entry && isYours(entry))")
           a(role="button" @click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
           span {{' · '}}
-        span(v-if="isAuthorized && isYou")
+        span(v-if="!entry || (entry && isYours(entry))")
           a(role="button" @click="doDelete") Delete
           span {{' · '}}
-        span Posted by {{user.nickname}}
-        span {{' · '}}
-        span {{ pastDuration }} ago
-      section(v-if="replyDepth < 3")
-        Entry(v-if="hasReply" :reply-to="replyPath" is-edit
-          @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-        Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath"
-            :entry="it" @render="$emit('render')" @delete="onDelete(it._id)")
-  section(v-if="replyDepth >= 3")
-    Entry(v-if="hasReply" :reply-to="replyPath" is-edit
-        @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-    Entry(v-for="it in subcomments" :key="it._id" :reply-to="replyPath"
-        :entry="it" @render="$emit('render')" @delete="onDelete(it._id)")
+        span(v-if="entry")
+          span Posted by {{nickname(entry) || 'Anonymous'}}
+          span {{' · '}}
+          span {{ pastDuration }} ago
+      section(v-if="entry && depth < 2")
+        Entry(v-if="hasReply" :source="id" :is-edit="true"
+          @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
+        Entry(v-for="it in subcomments" :key="it._id" :source="id"
+            :entry="it" @render="$emit('render')" @delete="onDelete(it._id)" :depth="depth + 1")
+  section(v-if="entry && depth >= 2")
+    Entry(v-if="hasReply" :source="id" :is-edit="true"
+        @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
+    Entry(v-for="it in subcomments" :key="it._id" :source="id"
+        :entry="it" @render="$emit('render')" @delete="onDelete(it._id)" :depth="depth + 1")
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import humanizeDuration from 'humanize-duration'
+import { User } from 'firebase/app'
+import { MakeHtml } from '../assets/make-html'
+import SimpleMde from './SimpleMde.vue'
+import { getGravatarUrl } from '@/assets/util'
+import { g, IEntry } from '@/assets/schema'
 
-import SimpleMde from './SimpleMde'
-import { getGravatarUrl } from '@/assets/utils'
-import { MakeHtml } from '@/assets/make-html'
-
-export default {
-  name: 'Entry',
+@Component({
   components: {
     SimpleMde
-  },
-  props: {
-    entry: {
-      type: Object,
-      default: () => ({})
-    },
-    isEdit: {
-      type: Boolean,
-      default: false
-    },
-    replyTo: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    const like = this.entry.like || {}
-    return {
-      getGravatarUrl,
-      makehtml: null,
-      like,
-      modelIsEdit: this.isEdit,
-      hasReply: false,
-      value: this.entry.content || '',
-      subcomments: [],
-      hasMore: false,
-      likeKey: JSON.stringify(like['thumb-up'])
-    }
-  },
-  computed: {
-    isAuthorized () {
-      return !!this.$store.state.auth.user
-    },
-    isYou () {
-      return this.user.email === this.authUser.email
-    },
-    id () {
-      return this.entry._id
-    },
-    replyPath () {
-      return this.replyTo ? `${this.replyTo}/${this.id}` : this.id
-    },
-    replyDepth () {
-      return this.replyPath.split('/').length
-    },
-    pastDuration () {
-      return humanizeDuration((+new Date()) - (+new Date(this.entry.createdAt)), {
-        round: true,
-        largest: 2
-      })
-    },
-    html () {
-      this.$nextTick(() => {
-        this.$emit('render')
-      })
+  }
+})
+export default class Entry extends Vue {
+  @Prop() entry?: IEntry
+  @Prop({ default: false }) isEdit!: boolean
+  @Prop({ required: true }) source!: string | null
+  @Prop({ required: true }) depth!: number
 
-      return (process.client && this.makehtml)
-        ? this.makehtml.parse(this.value)
-        : ''
-    },
-    user () {
-      return (this.entry.user ? this.entry.user
-        : this.replyTo
-          ? this.authUser
-          : null) || {}
-    },
-    authUser () {
-      return this.$store.state.auth.user || {}
-    },
-    axios () {
-      return this.$store.getters['auth/axios']
-    }
-  },
-  created () {
-    this.makehtml = new MakeHtml(this.id || `reply-${this.replyTo}`)
-    if (this.id) {
+  makehtml: MakeHtml | null = null
+  modelIsEdit = this.isEdit
+  hasReply = false
+  value = this.entry ? this.entry.content : ''
+  subcomments: IEntry[] = []
+  hasMore = false
+  getGravatarUrl = getGravatarUrl
+  html = ''
+
+  get id() {
+    return this.entry ? this.entry._id : null
+  }
+
+  get user() {
+    return this.$store.state.user as User
+  }
+
+  get path() {
+    return this.source && this.id ? `${this.source}/${this.id}` : this.id
+  }
+
+  get pastDuration() {
+    return this.entry
+      ? humanizeDuration(+new Date() - +new Date(this.entry.createdAt), {
+          round: true,
+          largest: 2
+        })
+      : ''
+  }
+
+  created() {
+    this.makehtml = new MakeHtml(this.path || undefined)
+    this.getHtml()
+    if (this.entry) {
       this.fetchSubcomments()
     }
-  },
-  methods: {
-    async toggleLike () {
-      if (this.id) {
-        if (this.like['thumb-up'] && this.like['thumb-up'].includes(this.user.email)) {
-          this.like['thumb-up'] = this.like['thumb-up'].filter(el => el !== this.user.email)
+  }
 
-          await this.axios.post(`/api/post/${this.id}/setLike`, {
-            like: this.like
-          })
-        } else {
-          this.like['thumb-up'] = this.like['thumb-up'] || []
-          this.like['thumb-up'].push(this.user.email)
+  isYours(entry: IEntry) {
+    return (
+      entry &&
+      this.user &&
+      this.user.email &&
+      this.user.email === (entry.createdBy || {}).email
+    )
+  }
 
-          await this.axios.post(`/api/post/${this.id}/setLike`, {
-            like: this.like
-          })
-        }
-        this.$set(this.like, 'thumb-up', this.like['thumb-up'])
-        this.likeKey = JSON.stringify(this.like['thumb-up'])
-      }
-    },
-    doReply () {
-      this.hasReply = true
-      this.$emit('render')
-    },
-    async toggleEdit () {
-      if (this.modelIsEdit) {
-        if (this.id) {
-          await this.axios.post(`/api/post/${this.id}`, { content: this.value })
-        } else {
-          await this.axios.put(`/api/post/`, {
-            content: this.value,
-            replyTo: this.replyTo
-          })
-          this.$emit('post')
-          this.$emit('delete')
-          this.$emit('render')
-          return
-        }
-      }
-      this.modelIsEdit = !this.modelIsEdit
-    },
-    async doDelete () {
-      if (this.id) {
-        await this.axios.delete(`/api/post/${this.id}`)
-      }
-      this.$emit('delete')
-    },
-    async fetchSubcomments ({ reset } = {}) {
-      if (process.client) {
-        let result = null
-        try {
-          const r = await this.axios.get('/api/post/', {
-            params: {
-              offset: reset ? 0 : this.subcomments.length,
-              replyTo: this.replyPath
-            }
-          })
-          result = r.data
-        } catch (e) {
-          return
-        }
+  nickname(entry: IEntry) {
+    return (
+      (entry && entry.createdBy ? entry.createdBy.displayName : null) ||
+      'Anonymous'
+    )
+  }
 
-        this.subcomments = reset ? result.data : [...this.subcomments, ...result.data]
-        this.$set(this, 'subcomments', this.subcomments)
-
-        if (this.subcomments.length < result.count) {
-          this.hasMore = true
-        } else {
-          this.hasMore = false
-        }
-        this.$emit('render')
-      }
-    },
-    async onPost () {
-      this.$set(this, 'subcomments', [])
-      await this.fetchSubcomments({ reset: true })
-    },
-    onDelete (id) {
-      this.$set(this, 'subcomments', this.subcomments.filter(el => el._id !== id))
+  async getHtml() {
+    if (process.client && this.makehtml) {
+      this.html = await this.makehtml.parse(this.value)
       this.$emit('render')
     }
+  }
+
+  async toggleLike() {
+    if (!this.id || !this.entry || !g.stitch!.email) {
+      return
+    }
+
+    if (this.entry.like['thumb-up'].includes(g.stitch!.email)) {
+      this.entry.like['thumb-up'] = this.entry.like['thumb-up'].filter(
+        (el: any) => el !== g.stitch!.email
+      )
+    } else {
+      this.entry.like['thumb-up'].push(g.stitch!.email)
+    }
+    await g.stitch!.update(this.id, { like: this.entry.like })
+    this.$set(this.entry, 'like', this.entry.like)
+  }
+
+  doReply() {
+    this.hasReply = true
+    this.$emit('render')
+  }
+
+  async toggleEdit() {
+    if (this.modelIsEdit) {
+      if (this.id) {
+        await g.stitch!.update(this.id, { content: this.value })
+      } else {
+        await g.stitch!.create({
+          content: this.value,
+          path: this.path,
+          like: {
+            'thumb-up': []
+          }
+        })
+        this.$emit('render')
+      }
+
+      await this.getHtml()
+    }
+
+    this.modelIsEdit = !this.modelIsEdit
+  }
+
+  async doDelete() {
+    if (!this.id) {
+      return
+    }
+
+    await g.stitch!.delete(this.id)
+    this.$emit('delete')
+  }
+
+  async fetchSubcomments() {
+    if (!this.entry) {
+      return
+    }
+
+    const r = await g.stitch!.read(this.id, this.subcomments)
+    this.subcomments = r.data
+
+    if (this.subcomments.length < r.count) {
+      this.hasMore = true
+    } else {
+      this.hasMore = false
+    }
+    this.$emit('render')
+  }
+
+  async onPost() {
+    this.$set(this, 'subcomments', [])
+    await this.fetchSubcomments()
+  }
+
+  onDelete(id: string) {
+    this.$set(
+      this,
+      'subcomments',
+      this.subcomments.filter((el) => el._id !== id)
+    )
+    this.$emit('render')
   }
 }
 </script>
@@ -224,7 +212,7 @@ export default {
   height: 200px;
 
   @media screen and (max-width: 600px) {
-    height: 300px;
+    height: 250px;
   }
 }
 </style>
