@@ -34,12 +34,12 @@ section
         Entry(v-if="hasReply" :source="id" :is-edit="true"
           @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
         Entry(v-for="it in subcomments" :key="it._id" :source="id"
-            :entry="it" @render="$emit('render')" @delete="onDelete(it._id)" :depth="depth + 1")
+            :entry="it" @render="$emit('render')" @delete="onDelete(it)" :depth="depth + 1")
   section(v-if="entry && depth >= 2")
     Entry(v-if="hasReply" :source="id" :is-edit="true"
         @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
     Entry(v-for="it in subcomments" :key="it._id" :source="id"
-        :entry="it" @render="$emit('render')" @delete="onDelete(it._id)" :depth="depth + 1")
+        :entry="it" @render="$emit('render')" @delete="onDelete(it)" :depth="depth + 1")
 </template>
 
 <script lang="ts">
@@ -166,11 +166,11 @@ export default class Entry extends Vue {
   }
 
   async doDelete() {
-    if (!this.id) {
+    if (!this.entry) {
       return
     }
 
-    await g.stitch!.delete(this.id)
+    await g.stitch!.delete(this.entry)
     this.$emit('delete')
   }
 
@@ -195,11 +195,11 @@ export default class Entry extends Vue {
     await this.fetchSubcomments()
   }
 
-  onDelete(id: string) {
+  onDelete(entry: IEntry) {
     this.$set(
       this,
       'subcomments',
-      this.subcomments.filter((el) => el._id !== id)
+      this.subcomments.filter((el) => el._id !== entry._id)
     )
     this.$emit('render')
   }

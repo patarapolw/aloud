@@ -2,7 +2,7 @@
 .container(style="margin-bottom: 50px;")
   MainEditor(@post="onPost" @render="onRender")
   Entry(v-for="it in entries" :key="it.id" :entry="it" :source="null" :depth="0"
-    @render="onRender" @delete="onDelete(it.id)")
+    @render="onRender" @delete="onDelete(it)")
 </template>
 
 <script lang="ts">
@@ -98,8 +98,8 @@ export default class Comment extends Vue {
     })
   }
 
-  async onDelete(id: string) {
-    await g.stitch!.delete(id)
+  async onDelete(entry: IEntry) {
+    await g.stitch!.delete(entry)
     this.entries = []
     await this.fetchEntries()
   }
