@@ -4,20 +4,17 @@ module.exports = {
     browser: true,
     node: true
   },
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
   extends: [
-    '@nuxtjs',
+    '@nuxtjs/eslint-config-typescript',
+    'prettier',
+    'prettier/vue',
+    'plugin:prettier/recommended',
     'plugin:nuxt/recommended'
+  ],
+  plugins: [
+    'prettier'
   ],
   // add your custom rules here
   rules: {
-    'require-await': 0,
-    'no-unused-vars': 0,
-    'no-return-await': 0,
-    'no-lonely-if': 0,
-    'import/order': 0,
-    'no-console': ["warn", { allow: ["warn", "error"] }],
   }
 }

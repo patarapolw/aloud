@@ -1,84 +1,81 @@
-import pkg from './package.json'
-import { flattenConfig } from './server/utils'
-
-Object.entries(flattenConfig([
-  /mongo\.uri/,
-  /secret/
-])).map(([k, v]) => { process.env[k] = process.env[k] || v })
-
 export default {
   mode: 'universal',
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     title: 'Aloud - Let your voice be heard.',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description || '' }
+      {
+        hid: 'description',
+        name: 'description',
+        content: process.env.npm_package_description || ''
+      }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   /*
-  ** Customize the progress-bar color
-  */
+   ** Customize the progress-bar color
+   */
   loading: { color: '#fff' },
   /*
-  ** Global CSS
-  */
-  css: [
-    'simplemde/dist/simplemde.min.css'
-  ],
+   ** Global CSS
+   */
+  css: ['simplemde/dist/simplemde.min.css'],
   /*
-  ** Plugins to load before mounting the App
-  */
-  plugins: [
-  ],
+   ** Plugins to load before mounting the App
+   */
+  plugins: [],
   /*
-  ** Nuxt.js dev-modules
-  */
-  buildModules: [
-    ...(process.env.NODE_ENV === 'development' ? [
-      // Doc: https://github.com/nuxt-community/eslint-module
-      '@nuxtjs/eslint-module'
-    ] : [])
-  ],
+   ** Nuxt.js dev-modules
+   */
+  buildModules: ['@nuxt/typescript-build'],
   /*
-  ** Nuxt.js modules
-  */
+   ** Nuxt.js modules
+   */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
     'nuxt-buefy',
-    '@nuxtjs/redirect-module'
+    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/axios',
+    // Doc: https://github.com/nuxt-community/dotenv-module
+    '@nuxtjs/dotenv',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: require('./firebase.config'),
+        services: {
+          auth: true,
+          storage: true,
+          performance: true,
+          analytics: true
+        }
+      }
+    ]
   ],
   /*
-  ** Build configuration
-  */
+   ** Axios module configuration
+   ** See https://axios.nuxtjs.org/options
+   */
+  axios: {},
+  /*
+   ** Build configuration
+   */
   build: {
     /*
-    ** You can extend webpack config here
-    */
-    extend (config, ctx) {
-      config.module.rules.push(
-        {
-          test: /\.md$/,
-          loader: 'raw-loader',
-          options: {
-            esModule: false
-          }
+     ** You can extend webpack config here
+     */
+    extend(config) {
+      config.module.rules.push({
+        test: /\.md$/,
+        loader: 'raw-loader',
+        options: {
+          esModule: false
         }
-      )
+      })
     }
   },
-  server: {
-    host: process.env.HOST || (process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'),
-    port: process.env.PORT
-  },
-  env: process.env,
-  redirect: [
-    { from: '^/docs/(.*)\\.md$', to: '/$1' }
-  ]
+  serverMiddleware: [{ path: '/api/metadata', handler: '~/api/metadata.js' }]
 }

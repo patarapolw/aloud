@@ -2,7 +2,7 @@
 
 > Aloud your commenting system on your personal web server.
 
-This project is powered by [MongoDB](https://www.mongodb.com), [Auth0](https://auth0.com) and [Cloudinary](https://cloudinary.com).
+This project is powered by [MongoDB](https://www.mongodb.com) and [Firebase](https://firebase.google.com).
 
 ## Features
 
@@ -26,4 +26,4 @@ See [Installation Guide](/docs/installation.md).
 
 ## Demo
 
-See <https://aloud-comments.herokuapp.com>
+See <https://aloud.polv.cc>

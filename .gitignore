@@ -83,11 +83,11 @@ dist
 # Service worker
 sw.*
 
-# Mac OSX
+# macOS
 .DS_Store
 
 # Vim swap files
 *.swp
 
-# Aloud config files
-aloud.config.json
+# Firebase
+firebase.*
