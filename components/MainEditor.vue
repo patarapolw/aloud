@@ -94,7 +94,7 @@ export default class MainEditor extends Vue {
   async doPost() {
     await g.stitch!.create({
       content: this.currentValue,
-      path: null,
+      path: '_root',
       like: {
         'thumb-up': []
       }

@@ -10,7 +10,10 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "cors": "gsutil cors set cors.json gs://$STORAGE_BUCKET"
+    "cors": "gsutil cors set cors.json gs://$STORAGE_BUCKET",
+    "gcr:build": "docker build -t gcr.io/$PROJECT_ID/aloud .",
+    "gcr:start": "docker run -p 8080:8080 gcr.io/$PROJECT_ID/aloud",
+    "gcr:deploy": "docker push gcr.io/$PROJECT_ID/aloud"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
@@ -40,6 +43,7 @@
     "spark-md5": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/runtime-corejs3": "^7.9.6",
     "@nuxt/typescript-build": "^0.6.0",
     "@nuxtjs/eslint-config-typescript": "^1.0.0",
     "@nuxtjs/eslint-module": "^1.0.0",
@@ -50,6 +54,7 @@
     "@types/simplemde": "^1.11.7",
     "@types/spark-md5": "^3.0.2",
     "babel-eslint": "^10.0.1",
+    "core-js": "^3.6.5",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-nuxt": ">=0.4.2",

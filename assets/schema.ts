@@ -15,7 +15,7 @@ export interface IEntry {
     displayName: string | null
     email: string | null
   }
-  path: string | null
+  path: string
   like: {
     'thumb-up': string[] // email
   }
@@ -30,7 +30,6 @@ export class StitchOp {
   db!: import('mongodb-stitch-browser-sdk').RemoteMongoDatabase
   auth: import('mongodb-stitch-browser-sdk').StitchUser | null = null
 
-  // eslint-disable-next-line no-useless-constructor
   constructor(private vm: Vue) {
     this.init()
   }
@@ -123,13 +122,13 @@ export class StitchOp {
     return _id
   }
 
-  async read(parent: string | null, items: IEntry[]) {
+  async read(path: string, items: IEntry[] = []) {
     const data = await this.col
       .aggregate([
         {
           $match: {
             url: this.url,
-            path: parent
+            path
           }
         },
         {
@@ -147,10 +146,10 @@ export class StitchOp {
       .asArray()
 
     return {
-      data: [...items, ...data],
+      data: [...data, ...items],
       count: await this.col.count({
         url: this.url,
-        path: parent
+        path
       })
     }
   }
@@ -161,17 +160,15 @@ export class StitchOp {
 
   async delete(entry: IEntry) {
     await this.col.deleteOne({ _id: entry._id })
-    if (entry.path) {
-      await this.col.deleteMany({
-        url: this.url,
-        path: {
-          $regex: new RegExp(
-            `(^${escapeStringRegexp(entry.path)}/|^${escapeStringRegexp(
-              entry.path
-            )}$)`
-          )
-        }
-      })
-    }
+    await this.col.deleteMany({
+      url: this.url,
+      path: {
+        $regex: new RegExp(
+          `(^${escapeStringRegexp(entry.path)}/|^${escapeStringRegexp(
+            entry.path
+          )}$)`
+        )
+      }
+    })
   }
 }

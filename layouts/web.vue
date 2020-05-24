@@ -59,6 +59,11 @@ export default class WebLayout extends Vue {
       to: '/'
     },
     {
+      title: 'Installation',
+      icon: 'cog',
+      to: '/installation'
+    },
+    {
       title: 'Guide',
       icon: 'help',
       to: '/guide'
@@ -66,7 +71,7 @@ export default class WebLayout extends Vue {
     {
       title: 'GitHub',
       icon: 'github',
-      url: 'https://github.com/patarapolw/wildfire'
+      url: 'https://github.com/patarapolw/aloud'
     }
   ]
 

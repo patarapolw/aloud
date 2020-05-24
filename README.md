@@ -6,15 +6,17 @@ This project is powered by [MongoDB](https://www.mongodb.com) and [Firebase](htt
 
 ## Features
 
-This project uses [Showdown.js](https://github.com/showdownjs/showdown) to parse Markdown, then sanitized with DOMPurify, and CSS scoped.
+This project uses [Markdown-it](https://markdown-it.github.io/) to parse Markdown for additional security.
 
-Other than standard features, some of the features are
+Other than standard features, some of the features (from plugins) are
 
 - parseImgDimensions `![bar](bar.jpg =100x*)`
 - emoji :smile: :100:
 - simpleLineBreaks
 
-For more, see [Markdown Guide](/docs/guide.md).
+For more, see [Markdown Guide](/guide).
+
+I also extended with LiquidJS, see [github:patarapolw/aloud:assets/template.ts](https://github.com/patarapolw/aloud/blob/master/assets/template.ts).
 
 ## Troubleshooting
 
@@ -22,7 +24,7 @@ Profile images are powered by [Gravatar](https://gravatar.com/). Try upload an a
 
 ## Installation
 
-See [Installation Guide](/docs/installation.md).
+See [Installation Guide](/installation).
 
 ## Demo
 

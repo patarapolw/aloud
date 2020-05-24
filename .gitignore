@@ -91,3 +91,7 @@ sw.*
 
 # Firebase
 firebase.*
+
+# Aloud
+aloud.config.js
+.env.*
