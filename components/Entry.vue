@@ -3,7 +3,7 @@ section
   article.media(style="margin-top: 1rem;")
     figure.media-left(style="text-align: center;")
       p.image.avatar
-        img.is-rounded(:src="getGravatarUrl(user.email)")
+        img.is-rounded(:src="entry.createdBy ? getGravatarUrl(entry.createdBy.email) : getGravatarUrl()")
     .media-content(style="display: flex; flex-direction: column;")
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
@@ -12,7 +12,7 @@ section
       small
         span(v-if="entry")
           a(role="button" @click="toggleLike" v-if="isYours(entry)")
-            | {{entry.like['thumb-up'].includes(user.email) ? 'Unlike' : 'Like'}}
+            | {{entry.like['thumb-up'].includes(email) ? 'Unlike' : 'Like'}}
           span(v-if="entry.like['thumb-up'].length > 0")
             b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
             span {{entry.like['thumb-up'].length}}
@@ -30,16 +30,16 @@ section
           span Posted by {{nickname(entry) || 'Anonymous'}}
           span {{' · '}}
           span {{ pastDuration }} ago
-      section(v-if="entry && depth < 2")
-        Entry(v-if="hasReply" :source="id" :is-edit="true"
-          @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
-        Entry(v-for="it in subcomments" :key="it._id" :source="id"
-            :entry="it" @render="$emit('render')" @delete="onDelete(it)" :depth="depth + 1")
-  section(v-if="entry && depth >= 2")
-    Entry(v-if="hasReply" :source="id" :is-edit="true"
-        @delete="hasReply = false" @render="$emit('render')" @post="onPost" :depth="depth + 1")
-    Entry(v-for="it in subcomments" :key="it._id" :source="id"
-        :entry="it" @render="$emit('render')" @delete="onDelete(it)" :depth="depth + 1")
+      section(v-if="entry && depth < 3")
+        Entry(v-if="hasReply" :source="path" :is-edit="true"
+          @delete="hasReply = false" @render="$emit('render')" @post="onPost")
+        Entry(v-for="it in subcomments" :key="it._id" :source="path"
+            :entry="it" @render="$emit('render')" @delete="onDelete(it)")
+  section(v-if="entry && depth >= 3")
+    Entry(v-if="hasReply" :source="path" :is-edit="true"
+        @delete="hasReply = false" @render="$emit('render')" @post="onPost")
+    Entry(v-for="it in subcomments" :key="it._id" :source="path"
+        :entry="it" @render="$emit('render')" @delete="onDelete(it)")
 </template>
 
 <script lang="ts">
@@ -59,8 +59,7 @@ import { g, IEntry } from '@/assets/schema'
 export default class Entry extends Vue {
   @Prop() entry?: IEntry
   @Prop({ default: false }) isEdit!: boolean
-  @Prop({ required: true }) source!: string | null
-  @Prop({ required: true }) depth!: number
+  @Prop({ required: true }) source!: string
 
   makehtml: MakeHtml | null = null
   modelIsEdit = this.isEdit
@@ -76,11 +75,19 @@ export default class Entry extends Vue {
   }
 
   get user() {
-    return this.$store.state.user as User
+    return this.$store.state.user as User | null
+  }
+
+  get email() {
+    return this.user ? this.user.email : null
+  }
+
+  get depth() {
+    return this.source ? this.source.split('/').length : 0
   }
 
   get path() {
-    return this.source && this.id ? `${this.source}/${this.id}` : this.id
+    return `${this.source}/${this.id}`
   }
 
   get pastDuration() {
@@ -93,7 +100,7 @@ export default class Entry extends Vue {
   }
 
   created() {
-    this.makehtml = new MakeHtml(this.path || undefined)
+    this.makehtml = new MakeHtml(this.source)
     this.getHtml()
     if (this.entry) {
       this.fetchSubcomments()
@@ -101,12 +108,7 @@ export default class Entry extends Vue {
   }
 
   isYours(entry: IEntry) {
-    return (
-      entry &&
-      this.user &&
-      this.user.email &&
-      this.user.email === (entry.createdBy || {}).email
-    )
+    return !!entry && this.email === (entry.createdBy || {}).email
   }
 
   nickname(entry: IEntry) {
@@ -148,18 +150,21 @@ export default class Entry extends Vue {
     if (this.modelIsEdit) {
       if (this.id) {
         await g.stitch!.update(this.id, { content: this.value })
+
+        await this.getHtml()
+        this.$emit('render')
       } else {
         await g.stitch!.create({
           content: this.value,
-          path: this.path,
+          path: this.source,
           like: {
             'thumb-up': []
           }
         })
-        this.$emit('render')
-      }
 
-      await this.getHtml()
+        this.$emit('post')
+        this.doDelete()
+      }
     }
 
     this.modelIsEdit = !this.modelIsEdit
@@ -167,19 +172,22 @@ export default class Entry extends Vue {
 
   async doDelete() {
     if (!this.entry) {
-      return
+      this.$emit('delete')
+    } else {
+      await g.stitch!.delete(this.entry)
+      this.$emit('delete')
     }
-
-    await g.stitch!.delete(this.entry)
-    this.$emit('delete')
   }
 
-  async fetchSubcomments() {
+  async fetchSubcomments(opts: any = {}) {
     if (!this.entry) {
       return
     }
 
-    const r = await g.stitch!.read(this.id, this.subcomments)
+    const r = await g.stitch!.read(
+      this.path,
+      opts.reset ? [] : this.subcomments
+    )
     this.subcomments = r.data
 
     if (this.subcomments.length < r.count) {
@@ -191,8 +199,7 @@ export default class Entry extends Vue {
   }
 
   async onPost() {
-    this.$set(this, 'subcomments', [])
-    await this.fetchSubcomments()
+    await this.fetchSubcomments({ reset: true })
   }
 
   onDelete(entry: IEntry) {

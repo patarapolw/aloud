@@ -1,7 +1,7 @@
 <template lang="pug">
 .container(style="margin-bottom: 50px;")
   MainEditor(@post="onPost" @render="onRender")
-  Entry(v-for="it in entries" :key="it.id" :entry="it" :source="null" :depth="0"
+  Entry(v-for="it in entries" :key="it.id" :entry="it" source="_root" :depth="0"
     @render="onRender" @delete="onDelete(it)")
 </template>
 
@@ -70,8 +70,8 @@ export default class Comment extends Vue {
     }
   }
 
-  async fetchEntries() {
-    const r = await g.stitch!.read(null, this.entries)
+  async fetchEntries(opts: any = {}) {
+    const r = await g.stitch!.read('_root', opts.reset ? [] : this.entries)
     this.$set(this, 'entries', r.data)
     if (this.entries.length < r.count) {
       this.hasMore = true
@@ -82,8 +82,7 @@ export default class Comment extends Vue {
   }
 
   async onPost() {
-    this.entries = []
-    await this.fetchEntries()
+    await this.fetchEntries({ reset: true })
   }
 
   onRender() {
@@ -100,8 +99,7 @@ export default class Comment extends Vue {
 
   async onDelete(entry: IEntry) {
     await g.stitch!.delete(entry)
-    this.entries = []
-    await this.fetchEntries()
+    await this.fetchEntries({ reset: true })
   }
 }
 </script>
