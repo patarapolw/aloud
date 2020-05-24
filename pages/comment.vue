@@ -44,7 +44,7 @@ export default class Comment extends Vue {
     return process.client ? (frameElement as HTMLIFrameElement) : null
   }
 
-  async created() {
+  created() {
     this.$fireAuth.onAuthStateChanged((user) => {
       this.$store.commit('setUser', user)
     })
@@ -52,21 +52,21 @@ export default class Comment extends Vue {
     if (this.root) {
       this.root.style.maxWidth = '90vw'
     }
+  }
+
+  async mounted() {
+    if (this.root) {
+      window.addEventListener('scroll', () => {
+        this.setHeight()
+      })
+      this.setHeight()
+    }
 
     if (process.client) {
       g.stitch = new StitchOp(this)
       await g.stitch!.login()
 
       this.fetchEntries()
-    }
-  }
-
-  mounted() {
-    if (this.root) {
-      window.addEventListener('scroll', () => {
-        this.setHeight()
-      })
-      this.setHeight()
     }
   }
 
