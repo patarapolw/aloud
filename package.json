@@ -10,7 +10,11 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "cors": "gsutil cors set cors.json gs://$STORAGE_BUCKET"
+    "cors": "gsutil cors set cors.json gs://$STORAGE_BUCKET",
+    "pregcr:build": "npm run build",
+    "gcr:build": "docker build -t gcr.io/$PROJECT_ID/aloud .",
+    "gcr:start": "docker run -p 8080:8080 gcr.io/$PROJECT_ID/aloud",
+    "gcr:deploy": "docker push gcr.io/$PROJECT_ID/aloud"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",

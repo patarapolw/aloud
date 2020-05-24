@@ -94,3 +94,4 @@ firebase.*
 
 # Aloud
 aloud.config.js
+.env.*

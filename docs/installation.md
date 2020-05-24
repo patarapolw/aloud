@@ -41,7 +41,7 @@ For performance reasons, you will also need indexing in MongoDB database, on the
 - `createdAt`
 - `url`
 
-For deployment, I use Google App Engine, see <https://nuxtjs.org/faq/appengine-deployment>.
+For deployment, I use Docker on Google Cloud Run.
 
 ## Adding comments to the frontend
 
