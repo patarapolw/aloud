@@ -1,29 +1,59 @@
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
-import Home from '../views/Home.vue'
+import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-  const routes: Array<RouteConfig> = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+const registeredLayouts = [
+  'Web'
 ]
+
+registeredLayouts.map((layout) => {
+  Vue.component(`${layout}-layout`, () => import(/* webpackChunkName: "[request]-layout" */ `../layouts/${layout}.vue`))
+})
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes: [
+    {
+      path: '/comment',
+      component: () => import(/* webpackChunkName: "[request]" */ '../views/Comment.vue')
+    },
+    {
+      path: '/installation',
+      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      props: {
+        raw: require('../../../../docs/installation.md')
+      },
+      meta: {
+        layout: 'web'
+      }
+    },
+    {
+      path: '/guide',
+      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      props: {
+        raw: require('../../../../docs/guide.md')
+      },
+      meta: {
+        layout: 'web'
+      }
+    },
+    {
+      path: '/',
+      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      props: {
+        raw: require('../../../../README.md')
+      },
+      meta: {
+        layout: 'web'
+      }
+    },
+    {
+      path: '*',
+      component: () => import(/* webpackChunkName: "[request]" */ '../views/NotFound.vue')
+    }
+  ]
 })
 
 export default router
