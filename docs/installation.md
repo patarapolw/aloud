@@ -36,8 +36,8 @@ robo docker-deploy  # Deploy the docker
 I use [`robo.yml`](https://github.com/tj/robo) and [concurrently](https://github.com/kimmobrunfeldt/concurrently).
 
 ```sh
-cd packages/server && npm i && cd -
-cd packages/web && npm i && cd -
+cd packages/server && yarn && cd -
+cd packages/web && yarn && cd -
 robo dev
 ```
 

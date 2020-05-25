@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "tmp": "mkdir -p tmp && cp -r ../../docs tmp/docs && cp ../../README.md tmp/README.md; exit 0"
   },
   "dependencies": {
     "axios": "^0.19.2",

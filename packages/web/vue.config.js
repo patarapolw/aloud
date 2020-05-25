@@ -15,5 +15,7 @@ module.exports = {
       .test(/\.md$/)
       .use('raw-loader')
       .loader('raw-loader')
+
+    // config.resolve.set('symlinks', process.env.NODE_ENV !== 'development')
   }
 }
