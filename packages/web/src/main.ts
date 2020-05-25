@@ -7,6 +7,7 @@ import firebase from 'firebase/app'
 import 'firebase/analytics'
 import 'firebase/auth'
 import 'simplemde/dist/simplemde.min.css'
+import './plugins/buefy'
 
 Vue.config.productionTip = false
 

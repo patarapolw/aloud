@@ -11,11 +11,12 @@ export default new Vuex.Store({
   },
   mutations: {
     setUser (state, user) {
-      state.user = JSON.parse(JSON.stringify(user))
+      // state.user = JSON.parse(JSON.stringify(user))
+      state.user = user
     }
   },
   actions: {
-    async getApi ({ state, commit }) {
+    async getApi ({ state }, url) {
       const api = axios.create({
         transformResponse: [
           (d) => {
@@ -24,7 +25,10 @@ export default new Vuex.Store({
             } catch (_) {}
             return d
           }
-        ]
+        ],
+        headers: {
+          'X-Aloud-Url': url
+        }
       })
 
       if (state.user) {

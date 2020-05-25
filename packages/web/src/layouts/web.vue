@@ -15,11 +15,11 @@ div
         | General
       ul.menu-list
         li(v-for="(item, key) of items" :key="key")
-          nuxt-link(v-if="item.to" :to="item.to" exact-active-class="is-active")
-            b-icon(:icon="item.icon" style="margin-right: 0.5rem;")
+          router-link(v-if="item.to" :to="item.to" exact-active-class="is-active")
+            b-icon(:icon="item.icon" :pack="item.iconPack" style="margin-right: 0.5rem;")
             | {{ item.title }}
           a(v-else :href="item.url")
-            b-icon(:icon="item.icon" style="margin-right: 0.5rem;")
+            b-icon(:icon="item.icon" :pack="item.iconPack" style="margin-right: 0.5rem;")
             | {{ item.title }}
     .container.column.is-10
       slot
@@ -45,12 +45,13 @@ export default class WebLayout extends Vue {
     },
     {
       title: 'Guide',
-      icon: 'help',
+      icon: 'question',
       to: '/guide'
     },
     {
       title: 'GitHub',
       icon: 'github',
+      iconPack: 'fab',
       url: 'https://github.com/patarapolw/aloud'
     }
   ]

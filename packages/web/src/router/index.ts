@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const registeredLayouts = [
-  'Web'
+  'web'
 ]
 
 registeredLayouts.map((layout) => {

@@ -7,8 +7,7 @@ section
     .media-content(style="display: flex; flex-direction: column;")
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
-        client-only(v-else)
-          SimpleMde.reply-editor(v-model="value" @init="$emit('render')")
+        SimpleMde.reply-editor(v-else v-model="value" @init="$emit('render')")
       small
         span(v-if="entry")
           a(role="button" @click="toggleLike" v-if="isYours(entry)")
@@ -107,7 +106,7 @@ export default class Entry extends Vue {
   }
 
   async getApi () {
-    return await this.$store.dispatch('getApi') as AxiosInstance
+    return await this.$store.dispatch('getApi', this.$route.query.url) as AxiosInstance
   }
 
   isYours (entry: any) {
@@ -169,10 +168,7 @@ export default class Entry extends Vue {
       } else {
         await api.put('/api/comment/', {
           content: this.value,
-          path: this.source,
-          like: {
-            'thumb-up': []
-          }
+          path: this.source
         })
         this.$emit('post')
         this.doDelete()

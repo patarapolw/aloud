@@ -4,7 +4,7 @@
       <h1>Whoops!</h1>
       Clumsy us, we were unable to find the page you were looking for
     </div>
-    <img src="~/assets/groceries.png" class="image" />
+    <img :src="require('@/assets/groceries.png')" class="image" />
     <footer>
       <a href="http://www.free404.com" target="_blank">free404.com</a>
     </footer>

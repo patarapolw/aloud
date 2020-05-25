@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "buefy": "^0.8.19",
     "core-js": "^3.6.4",
     "firebase": "^7.14.5",
     "firebaseui": "^4.5.0",
@@ -24,6 +26,7 @@
     "spark-md5": "^3.0.1",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
+    "vue-click-outside": "^1.1.0",
     "vue-property-decorator": "^8.4.1",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"

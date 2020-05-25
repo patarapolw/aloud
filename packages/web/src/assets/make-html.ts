@@ -7,8 +7,7 @@ import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import hljsDefineVue from 'highlightjs-vue'
 import { liquid } from './template'
-
-import 'highlight.js/styles/default.min.css'
+import 'highlight.js/styles/default.css'
 
 hljsDefineVue(hljs)
 

@@ -49,7 +49,7 @@ export default class Comment extends Vue {
   }
 
   async getApi () {
-    return await this.$store.dispatch('getApi') as AxiosInstance
+    return await this.$store.dispatch('getApi', this.$route.query.url) as AxiosInstance
   }
 
   async fetchEntries (opts: any = {}) {

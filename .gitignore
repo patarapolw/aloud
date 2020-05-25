@@ -140,4 +140,4 @@ temp/
 
 .env.*
 aloud.config.js
-firebase.config.js
+firebase.*

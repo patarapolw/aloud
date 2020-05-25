@@ -1,6 +1,6 @@
 <template lang="pug">
 article.media
-  figure.media-left(style="text-align: center; position: relative;")
+  figure.media-left(style="text-align: center; position: relative;" ref="figure")
     .popup(ref="login" v-show="isLoggingIn")
     p.image.avatar(style="margin-top: 1rem;")
       b-tooltip(v-if="user" :label="'Logged in as ' + (user.displayName || 'Anonymous') + '. Click to logout'" position="is-right")
@@ -11,10 +11,10 @@ article.media
           @click="isLoggingIn = true" role="button")
   .media-content
     .toggleable-editor-main
-      client-only(v-if="user")
-        SimpleMde(
-          v-model="currentValue"
-          @init="$emit('render')")
+      SimpleMde(
+        v-if="user"
+        v-model="currentValue"
+        @init="$emit('render')")
       b-input(v-else type="textarea" disabled placeholder="Please login to comment.")
     .buttons(style="margin-left: 1rem;")
         b-button.is-success(:disabled="!user || !currentValue" @click="doPost") Post Comment
@@ -41,13 +41,26 @@ export default class MainEditor extends Vue {
   getGravatarUrl = getGravatarUrl
   isLoggingIn = false
   authUI: any = null
+
   get user () {
     return this.$store.state.user
+  }
+
+  mounted () {
+    this.$el.addEventListener('click', (evt: any) => {
+      if (this.isLoggingIn) {
+        const { figure } = this.$refs as any
+        if (figure && !figure.contains(evt.target)) {
+          this.isLoggingIn = false
+        }
+      }
+    })
   }
 
   @Watch('isLoggingIn')
   async doLogin () {
     const { login } = this.$refs as any
+
     this.authUI =
         this.authUI ||
         auth.AuthUI.getInstance() ||
@@ -66,30 +79,20 @@ export default class MainEditor extends Vue {
       ],
       callbacks: {
         signInSuccessWithAuthResult: (r: any) => {
-          this.$store.dispatch('login', r.user)
           this.isLoggingIn = false
           return true
         }
       }
     })
-    const onClickOutside = (evt: any) => {
-      const { login } = this.$refs as any
-      if (login && !login.contains(evt.target)) {
-        this.isLoggingIn = false
-      }
-      this.$el.removeEventListener('click', onClickOutside)
-    }
-    this.$el.addEventListener('click', onClickOutside)
   }
 
   async doLogout () {
     await firebase.auth().signOut()
-    this.$store.dispatch('logout')
   }
 
   @Emit('post')
   async doPost () {
-    const api = await this.$store.dispatch('getApi') as AxiosInstance
+    const api = await this.$store.dispatch('getApi', this.$route.query.url) as AxiosInstance
     await api.put('/api/comment/', {
       content: this.currentValue,
       path: '_root',
