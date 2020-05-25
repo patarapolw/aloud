@@ -23,7 +23,7 @@ const router = new VueRouter({
       path: '/installation',
       component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
       props: {
-        raw: require('../../../../docs/installation.md')
+        getMd: async () => (await import('../../../../docs/installation.md')).default
       },
       meta: {
         layout: 'web'
@@ -33,7 +33,7 @@ const router = new VueRouter({
       path: '/guide',
       component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
       props: {
-        raw: require('../../../../docs/guide.md')
+        getMd: async () => (await import('../../../../docs/guide.md')).default
       },
       meta: {
         layout: 'web'
@@ -43,7 +43,7 @@ const router = new VueRouter({
       path: '/',
       component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
       props: {
-        raw: require('../../../../README.md')
+        getMd: async () => (await import('../../../../README.md')).default
       },
       meta: {
         layout: 'web'

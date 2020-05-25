@@ -3,14 +3,15 @@ import swagger from 'fastify-oas'
 import fSession from 'fastify-session'
 import fCoookie from 'fastify-cookie'
 import admin from 'firebase-admin'
+import escapeRegExp from 'escape-string-regexp'
 
 import commentRouter from './comment'
 import metadataRouter from './metadata'
 
 const router = (f: FastifyInstance, _: any, next: () => void) => {
   admin.initializeApp({
-    credential: admin.credential.cert(require('../../../../firebase.adminsdk.json')),
-    databaseURL: require('../../../../firebase.config.js').databaseURL
+    credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SDK!)),
+    databaseURL: JSON.parse(process.env.FIREBASE_CONFIG!).databaseURL
   })
 
   f.register(swagger, {
@@ -64,7 +65,9 @@ const router = (f: FastifyInstance, _: any, next: () => void) => {
 
     const url = req.headers['x-aloud-url']
     if (url) {
-      if (!(require('../../../../aloud.config').allowedUrls as RegExp[]).some((re) => re.test(url))) {
+      if (!(process.env.ALOUD_SITE!.split(',').map((s) => {
+        return s.includes('//') ? new RegExp(escapeRegExp(s)) : new RegExp(`//(.+?\\.)?${escapeRegExp(s)}`)
+      })).some((re) => re.test(url))) {
         reply.status(401).send()
         return
       }

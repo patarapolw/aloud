@@ -3,17 +3,17 @@ section
   article.media(style="margin-top: 1rem;")
     figure.media-left(style="text-align: center;")
       p.image.avatar
-        img.is-rounded(:src="(entry && entry.createdBy) ? getGravatarUrl(entry.createdBy.email) : getGravatarUrl()")
+        img.is-rounded(:src="(entry && entry.createdBy) ? getGravatarUrl(entry.createdBy.email) : getGravatarUrl(email)")
     .media-content(style="display: flex; flex-direction: column;")
       div(style="min-height: 50px; flex-grow: 1")
         .content(v-if="!modelIsEdit" v-html="html")
         SimpleMde.reply-editor(v-else v-model="value" @init="$emit('render')")
       small
-        span(v-if="entry")
+        span(v-if="canLike")
           a(role="button" @click="toggleLike" v-if="isYours(entry)")
             | {{entry.like['thumb-up'].includes(email) ? 'Unlike' : 'Like'}}
           span(v-if="entry.like['thumb-up'].length > 0")
-            b-icon(icon="thumb-up-outline" size="is-small" style="margin-left: 0.5rem;")
+            b-icon(icon="thumbs-up" size="is-small" style="margin-left: 0.5rem;")
             span {{entry.like['thumb-up'].length}}
           span(v-if="user || entry.like['thumb-up']") {{' · '}}
         span(v-if="entry && user")
@@ -97,6 +97,10 @@ export default class Entry extends Vue {
       : ''
   }
 
+  get canLike () {
+    return !!(this.entry && this.email)
+  }
+
   created () {
     this.makehtml = new MakeHtml(this.source)
     this.getHtml()
@@ -128,15 +132,15 @@ export default class Entry extends Vue {
   }
 
   async toggleLike () {
-    if (!this.id || !this.entry || !this.$store.state.email) {
+    if (!this.canLike) {
       return
     }
-    if (this.entry.like['thumb-up'].includes(this.$store.state.email)) {
+    if (this.entry.like['thumb-up'].includes(this.email)) {
       this.entry.like['thumb-up'] = this.entry.like['thumb-up'].filter(
-        (el: any) => el !== this.$store.state.email
+        (el: string) => el !== this.email
       )
     } else {
-      this.entry.like['thumb-up'].push(this.$store.state.email)
+      this.entry.like['thumb-up'].push(this.email)
     }
 
     const api = await this.getApi()
@@ -157,7 +161,7 @@ export default class Entry extends Vue {
     if (this.modelIsEdit) {
       const api = await this.getApi()
       if (this.id) {
-        await api.patch('/api/comment/', { comment: this.value }, {
+        await api.patch('/api/comment/', { content: this.value }, {
           params: {
             id: this.id
           }

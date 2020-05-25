@@ -9,8 +9,8 @@ import hljs from 'highlight.js'
 import { MakeHtml } from '../assets/make-html'
 
 @Component
-export default class PageReadme extends Vue {
-  @Prop({ required: true }) raw!: string
+export default class MarkdownDoc extends Vue {
+  @Prop({ required: true }) getMd!: () => Promise<string>
   html = ''
   makeHtml = new MakeHtml()
 
@@ -18,9 +18,9 @@ export default class PageReadme extends Vue {
     this.parse()
   }
 
-  @Watch('raw')
+  @Watch('getMd')
   async parse () {
-    this.html = await this.makeHtml.parse(this.raw)
+    this.html = await this.makeHtml.parse(await this.getMd())
     this.$nextTick(() => {
       this.$el.querySelectorAll('pre code').forEach((block) => {
         hljs.highlightBlock(block)

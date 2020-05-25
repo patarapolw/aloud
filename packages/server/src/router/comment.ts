@@ -125,7 +125,7 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
         type: 'object',
         properties: {
           like: { type: 'object' },
-          comment: { type: 'string' }
+          content: { type: 'string' }
         }
       }
     }
@@ -136,8 +136,8 @@ export default (f: FastifyInstance, _: any, next: () => void) => {
     }
 
     const { id } = req.query
-    const { like, comment } = req.body
-    const $set = JSON.parse(JSON.stringify({ like, comment }))
+    const { like, content } = req.body
+    const $set = JSON.parse(JSON.stringify({ like, content }))
 
     await EntryModel.updateOne({ _id: id }, { $set })
 

@@ -18,7 +18,7 @@ div
           router-link(v-if="item.to" :to="item.to" exact-active-class="is-active")
             b-icon(:icon="item.icon" :pack="item.iconPack" style="margin-right: 0.5rem;")
             | {{ item.title }}
-          a(v-else :href="item.url")
+          a(v-else :href="item.url" target="_blank" rel="noopener")
             b-icon(:icon="item.icon" :pack="item.iconPack" style="margin-right: 0.5rem;")
             | {{ item.title }}
     .container.column.is-10

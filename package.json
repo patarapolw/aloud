@@ -1,7 +1,7 @@
 {
   "name": "aloud",
-  "version": "1.0.0",
-  "description": "",
+  "description": "A self-hosted commenting engine",
+  "private": true,
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
@@ -15,7 +15,7 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently 'cd packages/server && npm run dev' 'cd packages/web && npm run dev'"
   },
   "repository": {
     "type": "git",
