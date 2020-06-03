@@ -6,42 +6,42 @@ You will need both
 
 - Firebase,
   - Auth and Storage enabled
-  - CORS enabled for Storage, by running `npm run cors`
-- MongoDB,
-  - Stitch enabled
-  - Allow login with Email and Anonymous
+  - CORS enabled for Storage, by running `gsutil cors set cors.json gs://[BUCKET_NAME]`
+- MongoDB
 
-Also, three hidden files you will need for the repo are,
-
-- `.env`
-- `firebase.config.js`
-- `aloud.config.js`
-
-Put this in `.env`.
+And several environment variables
 
 ```sh
-BASE_URL='http://localhost:3000'
-# BASE_URL='https://<YOUR_ONLINE_BASE_URL>'
-MONGO_APP_ID='<GET_THIS_FROM_MONGO_DB_STITCH>'
-STORAGE_BUCKET='<GET_THIS_FROM_FIREBASE.CONFIG.JS>'
+BASE_URL='https://<YOUR_ONLINE_BASE_URL>'
 SECRET='<GENERATE_RANDOMLY>' # I use https://randomkeygen.com/
+PROJECT_ID=
+MONGO_URI= # You might use MongoDB Atlas
+ALOUD_SITE= # Comma-separated allowed blog origins.
+# // (double forward slash) for schema and / (single forward slash) for pathname.
+FIREBASE_SDK= # For firebase-admin.
+FIREBASE_CONFIG= # For firebase client, although you will also need this in server-side.
+# You might convert JSON and module.exports to envvar string by running
+# `node -e 'console.log(JSON.stringify(require("./<PATH_TO_JS_OR_JSON_FILE>")))'`
 ```
 
-Put this in `aloud.config.js`
+For deployment, I myself use Docker on Google Cloud Run.
 
-```js
-export const allowedUrls = [/\/\/localhost/, new RegExp(`//(.+?)?${escapeRegExp(YOUR_COMMENT_ENABLED_WEBSITE)}`)]
+```sh
+robo docker-build   # Build the docker
+robo docker-deploy  # Deploy the docker
 ```
 
-`firebase.config.js` is Firebase config object. See <https://firebase.google.com/docs/web/setup#using-module-bundlers>.
+## Running in development
 
-For performance reasons, you will also need indexing in MongoDB database, on the following keys,
+I use [`robo.yml`](https://github.com/tj/robo) and [concurrently](https://github.com/kimmobrunfeldt/concurrently).
 
-- `path`
-- `createdAt`
-- `url`
+```sh
+cd packages/server && yarn && cd -
+cd packages/web && yarn && cd -
+robo dev
+```
 
-For deployment, I use Docker on Google Cloud Run.
+Of course, you can also use `robo docker-build && robo docker-start`, to simulate production like environment.
 
 ## Adding comments to the frontend
 

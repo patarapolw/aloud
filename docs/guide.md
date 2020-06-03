@@ -70,7 +70,3 @@ Or spanning multiple lines...
     var example = "hello!";
     alert(example);
     ```
-
-Since this is based on Showdown.js, you can also use this [guide](https://github.com/showdownjs/showdown/wiki/Showdown's-Markdown-syntax).
-
-The specific options and set up can be found [here](https://github.com/patarapolw/aloud/blob/master/assets/make-html.js).

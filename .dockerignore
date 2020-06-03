@@ -1,22 +1,3 @@
-# Ignore everything
-**
-
-# Allow files and directories
-# !/.nuxt
-!/api/**
-!/assets/**
-!/components/**
-!/docs/**
-!/layouts/**
-!/middleware/**
-!/pages/**
-!/plugins/**
-!/static/**
-!/store/**
-!/nuxt.config.js
-!/firebase.config.js
-!/package.json
-!/package-lock.json
-!/README.md
-!/tsconfig.json
-!/.env.prod
+node_modules/
+**/node_modules/
+.env

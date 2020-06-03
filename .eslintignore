@@ -1,0 +1,7 @@
+*.*
+!*.js
+!*.ts
+!*.vue
+node_modules
+dist
+lib

@@ -16,7 +16,7 @@ Other than standard features, some of the features (from plugins) are
 
 For more, see [Markdown Guide](/guide).
 
-I also extended with LiquidJS, see [github:patarapolw/aloud:assets/template.ts](https://github.com/patarapolw/aloud/blob/master/assets/template.ts).
+I also extended with LiquidJS, see [github:patarapolw/aloud:packages/web/src/assets/template.ts](https://github.com/patarapolw/aloud/blob/master/packages/web/src/assets/template.ts).
 
 ## Troubleshooting
 
@@ -28,4 +28,4 @@ See [Installation Guide](/installation).
 
 ## Demo
 
-See <https://aloud.polv.cc>
+See <https://al.polv.cc>
