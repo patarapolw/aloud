@@ -35,5 +35,10 @@
     "pino-pretty": "^4.0.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.9.3"
+  },
+  "engines": {
+    "yarn": "1.x",
+    "npm": "please-use-yarn",
+    "node": "12.x"
   }
 }

@@ -9,26 +9,20 @@ section
         .content(v-if="!modelIsEdit" v-html="html")
         SimpleMde.reply-editor(v-else v-model="value" @init="$emit('render')")
       small
-        span(v-if="canLike")
+        span.footer-block(v-if="canLike")
           a(role="button" @click="toggleLike" v-if="isYours(entry)")
             | {{entry.like['thumb-up'].includes(email) ? 'Unlike' : 'Like'}}
           span(v-if="entry.like['thumb-up'].length > 0")
             b-icon(icon="thumbs-up" size="is-small" style="margin-left: 0.5rem;")
             span {{entry.like['thumb-up'].length}}
-          span(v-if="user || entry.like['thumb-up']") {{' · '}}
-        span(v-if="entry && user")
+        span.footer-block(v-if="entry && user")
           a(role="button" @click="doReply") Reply
-          span {{' · '}}
-        span(v-if="!entry || (entry && isYours(entry))")
+        span.footer-block(v-if="!entry || (entry && isYours(entry))")
           a(role="button" @click="toggleEdit") {{modelIsEdit ? 'Post' : 'Edit'}}
-          span {{' · '}}
-        span(v-if="!entry || (entry && isYours(entry))")
+        span.footer-block(v-if="!entry || (entry && isYours(entry))")
           a(role="button" @click="doDelete") Delete
-          span {{' · '}}
-        span(v-if="entry")
-          span Posted by {{nickname(entry) || 'Anonymous'}}
-          span {{' · '}}
-          span {{ pastDuration }} ago
+        span.footer-block(v-if="entry") Posted by {{nickname(entry) || 'Anonymous'}}
+        span.footer-block(v-if="entry") {{ pastDuration }} ago
       section(v-if="entry && depth < 3")
         Entry(v-if="hasReply" :source="path" :is-edit="true"
           @delete="hasReply = false" @render="$emit('render')" @post="onPost")
@@ -240,5 +234,9 @@ export default class Entry extends Vue {
   @media screen and (max-width: 600px) {
     height: 250px;
   }
+}
+
+.footer-block + .footer-block::before {
+  content: ' · ';
 }
 </style>

@@ -14,9 +14,6 @@
     "eslint-plugin-vue": "^6.2.2",
     "typescript": "^3.9.3"
   },
-  "scripts": {
-    "dev": "concurrently 'cd packages/server && npm run dev' 'cd packages/web && npm run dev'"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/patarapolw/aloud.git"
@@ -27,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/patarapolw/aloud/issues"
   },
-  "homepage": "https://github.com/patarapolw/aloud#readme"
+  "homepage": "https://github.com/patarapolw/aloud#readme",
+  "engines": {
+    "yarn": "1.x",
+    "npm": "please-use-yarn",
+    "node": "12.x"
+  }
 }
