@@ -28,4 +28,4 @@ See [Installation Guide](/installation).
 
 ## Demo
 
-See <https://aloud.polv.cc>
+See <https://al.polv.cc>
