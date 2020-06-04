@@ -65,7 +65,7 @@ However, it won't account for proper IFrame height. A way to solve this is to ad
 
 ```js
 setScrollHeight (evt: any) {
-  if (evt.origin === location.origin) {
+  if (evt.origin === "<YOUR_ALOUD_HOSTING>") {
     commentElement.style.height = `${evt.data.scrollHeight}px`
   }
 }
