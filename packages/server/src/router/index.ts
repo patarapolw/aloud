@@ -3,7 +3,6 @@ import swagger from 'fastify-oas'
 import fSession from 'fastify-session'
 import fCoookie from 'fastify-cookie'
 import admin from 'firebase-admin'
-import escapeRegExp from 'escape-string-regexp'
 
 import commentRouter from './comment'
 import metadataRouter from './metadata'
@@ -53,26 +52,12 @@ const router = (f: FastifyInstance, _: any, next: () => void) => {
   f.register(fCoookie)
   f.register(fSession, { secret: process.env.SECRET! })
 
-  f.addHook('preHandler', async (req, reply) => {
-    // if (process.env.NODE_ENV === 'development' && process.env.DEFAULT_USER) {
-    //   req.session.user = await Db.signInOrCreate(process.env.DEFAULT_USER)
-    //   return
-    // }
-
+  f.addHook('preHandler', async (req) => {
     if (req.req.url && req.req.url.startsWith('/api/doc')) {
       return
     }
 
     const url = req.headers['x-aloud-url']
-    if (url) {
-      if (!(process.env.ALOUD_SITE!.split(',').map((s) => {
-        return s.includes('//') ? new RegExp(escapeRegExp(s)) : new RegExp(`//(.+?\\.)?${escapeRegExp(s)}`)
-      })).some((re) => re.test(url))) {
-        reply.status(401).send()
-        return
-      }
-    }
-
     const bearerAuth = async (auth: string) => {
       const m = /^Bearer (.+)$/.exec(auth)
 

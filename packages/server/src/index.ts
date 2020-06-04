@@ -20,9 +20,10 @@ import { initDatabase } from './db/schema'
   const port = parseInt(process.env.PORT || '8080')
 
   app.register(helmet, {
+    frameguard: false,
     contentSecurityPolicy: {
       directives: {
-        frameSrc: process.env.ALOUD_SITE!.split(',')
+        'frame-ancestors': ['"self"', ...process.env.ALOUD_SITE!.split(',')]
       }
     }
   })
