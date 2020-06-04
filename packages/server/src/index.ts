@@ -22,7 +22,7 @@ import { initDatabase } from './db/schema'
   app.register(helmet, {
     contentSecurityPolicy: {
       directives: {
-        frameSrc: ['polv.cc']
+        frameSrc: process.env.ALOUD_SITE!.split(',')
       }
     }
   })
