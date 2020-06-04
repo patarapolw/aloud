@@ -27,6 +27,12 @@ FIREBASE_CONFIG= # For firebase client, although you will also need this in serv
 For deployment, I myself use Docker on Google Cloud Run.
 
 ```sh
+docker run \
+  -p 8080:8080 \
+  -e SECRET -e FIREBASE_SDK -e FIREBASE_CONFIG -e MONGO_URI -e ALOUD_SITE \
+  patarapolw/aloud
+
+# Or, build it yourself
 robo docker-build   # Build the docker
 robo docker-deploy  # Deploy the docker
 ```

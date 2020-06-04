@@ -14,7 +14,7 @@ Other than standard features, some of the features (from plugins) are
 - emoji :smile: :100:
 - simpleLineBreaks
 
-For more, see [Markdown Guide](/guide).
+For more, see [Markdown Guide](/docs/guide.md).
 
 I also extended with LiquidJS, see [github:patarapolw/aloud:packages/web/src/assets/template.ts](https://github.com/patarapolw/aloud/blob/master/packages/web/src/assets/template.ts).
 
@@ -24,7 +24,7 @@ Profile images are powered by [Gravatar](https://gravatar.com/). Try upload an a
 
 ## Installation
 
-See [Installation Guide](/installation).
+See [Installation Guide](/docs/installation.md).
 
 ## Demo
 
