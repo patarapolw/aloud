@@ -23,27 +23,21 @@ export default class Comment extends Vue {
   entries: any[] = []
   hasMore = false
 
-  get root () {
-    return window.frameElement as HTMLIFrameElement
+  get parent () {
+    return window.parent.window === window ? null : window.parent.window
   }
 
   created () {
     firebase.auth().onAuthStateChanged((user) => {
       this.$store.commit('setUser', user)
     })
-
-    if (this.root) {
-      this.root.style.maxWidth = '90vw'
-    }
   }
 
   mounted () {
-    if (this.root) {
-      window.addEventListener('scroll', () => {
-        this.setHeight()
-      })
+    window.addEventListener('scroll', () => {
       this.setHeight()
-    }
+    })
+    this.setHeight()
 
     this.fetchEntries()
   }
@@ -80,8 +74,10 @@ export default class Comment extends Vue {
 
   setHeight () {
     this.$nextTick(() => {
-      if (this.root) {
-        this.root.style.height = `${this.$el.scrollHeight + 100}px`
+      if (this.parent) {
+        this.parent.postMessage({
+          scrollHeight: this.$el.scrollHeight + 100
+        }, location.origin)
       }
     })
   }

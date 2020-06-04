@@ -60,3 +60,23 @@ It is as simple as adding an IFrame,
   sandbox="allow-scripts allow-popups allow-same-origin"
 ></iframe>
 ```
+
+However, it won't account for proper IFrame height. A way to solve this is to add,
+
+```js
+setScrollHeight (evt: any) {
+  if (evt.origin === location.origin) {
+    commentElement.style.height = `${evt.data.scrollHeight}px`
+  }
+}
+
+if (window.addEventListener) {
+  window.addEventListener('message', (evt) => {
+    setScrollHeight(evt)
+  }, false)
+} else {
+  window.attachEvent('onmessage', (evt) => {
+    setScrollHeight(evt)
+  })
+}
+```

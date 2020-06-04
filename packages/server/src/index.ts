@@ -43,7 +43,10 @@ import { initDatabase } from './db/schema'
     engine: {
       handlebars: require('handlebars')
     },
-    defaultContext: { firebaseConfig: process.env.FIREBASE_CONFIG },
+    defaultContext: {
+      firebaseConfig: process.env.FIREBASE_CONFIG,
+      baseUrl: process.env.BASE_URL
+    },
     // @ts-ignore
     root: path.resolve('public')
   })

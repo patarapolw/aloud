@@ -24,7 +24,8 @@ div
     .container.column.is-10
       slot
       .container(style="text-align: center;")
-        iframe.comment-iframe(:src="commentUrl" frameborder="0" sandbox="allow-scripts allow-popups allow-same-origin")
+        iframe.comment-iframe(ref="comment"
+          :src="commentUrl" frameborder="0" sandbox="allow-scripts allow-popups allow-same-origin")
 </template>
 
 <script lang="ts">
@@ -56,11 +57,37 @@ export default class WebLayout extends Vue {
     }
   ]
 
+  scrollHeight = 0
+
   get commentUrl () {
     const u = new URL('/comment', location.origin)
     u.searchParams.set('url', location.origin + this.$route.path)
 
     return u.href
+  }
+
+  mounted () {
+    if (window.addEventListener) {
+      window.addEventListener('message', (evt) => {
+        this.setScrollHeight(evt)
+      }, false)
+    } else {
+      // @ts-ignore
+      window.attachEvent('onmessage', (evt) => {
+        this.setScrollHeight(evt)
+      })
+    }
+  }
+
+  setScrollHeight (evt: any) {
+    const { comment } = this.$refs as any
+    if (!comment) {
+      return
+    }
+
+    if (evt.origin === location.origin) {
+      comment.style.height = `${evt.data.scrollHeight}px`
+    }
   }
 }
 </script>
