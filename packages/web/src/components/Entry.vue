@@ -23,15 +23,15 @@ section
           a(role="button" @click="doDelete") Delete
         span.footer-block(v-if="entry") Posted by {{nickname(entry) || 'Anonymous'}}
         span.footer-block(v-if="entry") {{ pastDuration }} ago
-      section(v-if="entry && depth < 3")
-        Entry(v-if="hasReply" :source="path" :is-edit="true"
+      section(v-if="depth < 3")
+        entry(v-if="hasReply" :source="path" :is-edit="true"
           @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-        Entry(v-for="it in subcomments" :key="it._id" :source="path"
+        entry(v-for="it in subcomments" :key="it._id" :source="path"
             :entry="it" @render="$emit('render')" @delete="onDelete(it)")
-  section(v-if="entry && depth >= 3")
-    Entry(v-if="hasReply" :source="path" :is-edit="true"
+  section(v-if="depth >= 3")
+    entry(v-if="hasReply" :source="path" :is-edit="true"
         @delete="hasReply = false" @render="$emit('render')" @post="onPost")
-    Entry(v-for="it in subcomments" :key="it._id" :source="path"
+    entry(v-for="it in subcomments" :key="it._id" :source="path"
         :entry="it" @render="$emit('render')" @delete="onDelete(it)")
 </template>
 
@@ -45,6 +45,7 @@ import { getGravatarUrl } from '../assets/util'
 import { AxiosInstance } from 'axios'
 
 @Component({
+  name: 'entry',
   components: {
     SimpleMde
   }

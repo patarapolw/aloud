@@ -1,7 +1,7 @@
 <template lang="pug">
 .container(style="margin-bottom: 50px;")
   MainEditor(@post="onPost" @render="onRender")
-  Entry(v-for="it in entries" :key="it.id" :entry="it" source="_root" :depth="0"
+  Entry(v-for="it in entries" :key="it.id + Math.random().toString(36)" :entry="it" source="_root" :depth="0"
     @render="onRender" @delete="onDelete(it)")
 </template>
 
