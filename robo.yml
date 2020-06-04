@@ -2,11 +2,7 @@
 
 docker-build:
   command: |
-    cd packages/web && yarn build && cd -
-    docker build \
-      -t {{.docker.tag}} \
-      --build-arg FIREBASE_CONFIG \
-      .
+    docker build -t {{.docker.tag}} .
 docker-start:
   command: |
     docker run \
@@ -18,9 +14,9 @@ docker-deploy:
     docker push {{.docker.tag}}
 dev:
   command: |
-    concurrently \
-      'cd packages/server && yarn dev' \
-      'cd packages/web && yarn dev'
+    npx concurrently \
+      'cd packages/server && npm run dev' \
+      'cd packages/web && npm run dev'
 
 ##########
 # Settings

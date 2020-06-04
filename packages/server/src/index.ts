@@ -3,6 +3,7 @@ import path from 'path'
 import fastify from 'fastify'
 import fastifyStatic from 'fastify-static'
 import helmet from 'fastify-helmet'
+import pointOfView from 'point-of-view'
 
 import router from './router'
 import { initDatabase } from './db/schema'
@@ -31,12 +32,29 @@ import { initDatabase } from './db/schema'
 
   app.register(router, { prefix: '/api' })
 
+  app.register(pointOfView, {
+    engine: {
+      handlebars: require('handlebars')
+    },
+    defaultContext: { firebaseConfig: process.env.FIREBASE_CONFIG },
+    // @ts-ignore
+    root: path.resolve('public')
+  })
+
   app.register(fastifyStatic, {
     root: path.resolve('public')
   })
 
+  app.get('/', (_, reply) => {
+    reply.view('index.html')
+  })
+
+  app.get('*.html', (_, reply) => {
+    reply.view('index.html')
+  })
+
   app.setNotFoundHandler((_, reply) => {
-    reply.sendFile('index.html')
+    reply.view('index.html')
   })
 
   app.listen(port, process.env.NODE_ENV === 'development' ? 'localhost' : '0.0.0.0', (err) => {

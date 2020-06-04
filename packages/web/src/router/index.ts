@@ -8,7 +8,7 @@ const registeredLayouts = [
 ]
 
 registeredLayouts.map((layout) => {
-  Vue.component(`${layout}-layout`, () => import(/* webpackChunkName: "[request]-layout" */ `../layouts/${layout}.vue`))
+  Vue.component(`${layout}-layout`, () => import(`@/layouts/${layout}.vue`))
 })
 
 const router = new VueRouter({
@@ -17,13 +17,13 @@ const router = new VueRouter({
   routes: [
     {
       path: '/comment',
-      component: () => import(/* webpackChunkName: "[request]" */ '../views/Comment.vue')
+      component: () => import('@/views/Comment.vue')
     },
     {
       path: '/installation',
-      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      component: () => import('@/views/MarkdownDoc.vue'),
       props: {
-        getMd: async () => (await import('../../../../docs/installation.md')).default
+        getMd: async () => (await import('@/assets/docs/installation.md')).default
       },
       meta: {
         layout: 'web'
@@ -31,9 +31,9 @@ const router = new VueRouter({
     },
     {
       path: '/guide',
-      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      component: () => import('@/views/MarkdownDoc.vue'),
       props: {
-        getMd: async () => (await import('../../../../docs/guide.md')).default
+        getMd: async () => (await import('@/assets/docs/guide.md')).default
       },
       meta: {
         layout: 'web'
@@ -41,9 +41,9 @@ const router = new VueRouter({
     },
     {
       path: '/',
-      component: () => import(/* webpackChunkName: "[request]" */ '../views/MarkdownDoc.vue'),
+      component: () => import('@/views/MarkdownDoc.vue'),
       props: {
-        getMd: async () => (await import('../../../../README.md')).default
+        getMd: async () => (await import('@/assets/README.md')).default
       },
       meta: {
         layout: 'web'
@@ -51,7 +51,7 @@ const router = new VueRouter({
     },
     {
       path: '*',
-      component: () => import(/* webpackChunkName: "[request]" */ '../views/NotFound.vue')
+      component: () => import('@/views/NotFound.vue')
     }
   ]
 })

@@ -11,7 +11,8 @@ import './plugins/buefy'
 
 Vue.config.productionTip = false
 
-firebase.initializeApp(JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG!))
+// @ts-ignore
+firebase.initializeApp(window.FIREBASE_CONFIG)
 firebase.auth().onAuthStateChanged((user) => {
   store.commit('setUser', user)
 })
