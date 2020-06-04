@@ -19,7 +19,13 @@ import { initDatabase } from './db/schema'
 
   const port = parseInt(process.env.PORT || '8080')
 
-  app.register(helmet)
+  app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        frameSrc: ['polv.cc']
+      }
+    }
+  })
 
   if (process.env.NODE_ENV === 'development') {
     app.register(require('fastify-cors'))
