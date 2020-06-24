@@ -77,7 +77,7 @@ export default class Comment extends Vue {
       if (this.parent) {
         this.parent.postMessage({
           scrollHeight: this.$el.scrollHeight + 100
-        }, location.origin)
+        }, this.parent.origin)
       }
     })
   }
