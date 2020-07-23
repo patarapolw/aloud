@@ -5249,10 +5249,10 @@ linkify-it@^3.0.1:
   dependencies:
     uc.micro "^1.0.1"
 
-liquidjs@^9.12.0:
-  version "9.12.0"
-  resolved "https://registry.yarnpkg.com/liquidjs/-/liquidjs-9.12.0.tgz#e938791fb326b06e1971ef5f80a0a38c88897e2a"
-  integrity sha512-Z1fERRy5TG76kNQfDuCl9+YmK6RMBsGhi3fl/57rBb5BbuVAS0YA7R3kh0/V0TwezpeywUf5xasR+Np86nD2TA==
+liquidjs@^9.14.0:
+  version "9.14.1"
+  resolved "https://registry.yarnpkg.com/liquidjs/-/liquidjs-9.14.1.tgz#9dd7cee686a7609aa051adb84913a088420e9838"
+  integrity sha512-5WYoIggCjGhOld1fZSIbA21AwxgQGcHv5UbzbiyJ9/EY8fhkaW8jQHVpfJ7gFHo4CtgZC4bRRd2QKTPjfT5cRg==
 
 loader-runner@^2.3.1, loader-runner@^2.4.0:
   version "2.4.0"
