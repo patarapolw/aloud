@@ -10,7 +10,7 @@
     "axios": "^0.19.2",
     "buefy": "^0.8.19",
     "core-js": "^3.6.4",
-    "firebase": "^7.14.5",
+    "firebase": "^7.15.5",
     "firebaseui": "^4.5.0",
     "he": "^1.2.0",
     "highlight.js": "^10.0.3",
