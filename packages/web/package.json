@@ -13,7 +13,7 @@
     "firebase": "^7.14.5",
     "firebaseui": "^4.5.0",
     "he": "^1.2.0",
-    "highlight.js": "^10.0.3",
+    "highlight.js": "^10.1.2",
     "highlightjs-vue": "github:patarapolw/highlightjs-vue",
     "humanize-duration": "^3.23.0",
     "liquidjs": "^9.12.0",
