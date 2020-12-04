@@ -1,10 +1,17 @@
 @import '~bulma/css/bulma.css';
-@import '~codemirror/lib/codemirror.css';
+
+* {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 :host {
   display: block;
-  max-width: var(--max-width, 800px);
+  width: var(--width, 800px);
   padding: 1rem;
+}
+
+p {
+  margin-bottom: 0.5em;
 }
 
 .button {
@@ -13,10 +20,8 @@
 
 .textarea {
   height: 200px;
-}
-
-.CodeMirror {
-  height: 100%;
+  width: unset;
+  min-width: unset;
 }
 
 .hide-scrollbar {
@@ -28,8 +33,13 @@
   }
 }
 
-small.dot-separated {
-  > span + span::before {
-    content: ' · ';
+small {
+  margin-top: 1em;
+  display: block;
+
+  &.dot-separated {
+    > span + span::before {
+      content: ' · ';
+    }
   }
 }

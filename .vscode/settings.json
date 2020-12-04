@@ -1,0 +1,4 @@
+{
+  "sort-imports.on-save": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

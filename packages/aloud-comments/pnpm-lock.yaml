@@ -3,11 +3,14 @@ dependencies:
   '@stencil/sass': 1.4.1_@stencil+core@2.3.0
   bulma: 0.9.1
   codemirror: 5.58.3
+  dompurify: 2.2.2
   scope-css: github.com/patarapolw/scope-css/d5f985ebc796677377c12b019f046b1929d2da2a
   showdown: 1.9.1
 devDependencies:
   '@types/codemirror': 0.0.101
+  '@types/dompurify': 2.0.4
   '@types/showdown': 1.9.3
+  import-sort-parser-typescript: 6.0.0
 lockfileVersion: 5.2
 packages:
   /@stencil/core/2.3.0:
@@ -32,6 +35,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-Pd3XNCyjiwZ99YIPSog7ca7LriivT2tfR+TWYcPMdJ7etmyF/QFkBDWjHwlFIpVsHeMQeb48Q3Tr3EHhgE8XFQ==
+  /@types/dompurify/2.0.4:
+    dependencies:
+      '@types/trusted-types': 1.0.6
+    dev: true
+    resolution:
+      integrity: sha512-y6K7NyXTQvjr8hJNsAFAD8yshCsIJ0d+OYEFzULuIqWyWOKL2hRru1I+rorI5U0K4SLAROTNuSUFXPDTu278YA==
   /@types/estree/0.0.45:
     dev: true
     resolution:
@@ -46,6 +55,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
+  /@types/trusted-types/1.0.6:
+    dev: true
+    resolution:
+      integrity: sha512-230RC8sFeHoT6sSUlRO6a8cAnclO06eeiq1QDfiv2FGCLWFvvERWgwIQD4FWqD9A69BN7Lzee4OXwoMVnnsWDw==
   /ansi-regex/4.1.0:
     dev: false
     engines:
@@ -98,6 +111,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
+  /dompurify/2.2.2:
+    dev: false
+    resolution:
+      integrity: sha512-BsGR4nDLaC5CNBnyT5I+d5pOeaoWvgVeg6Gq/aqmKYWMPR07131u60I80BvExLAJ0FQEIBQ1BTicw+C5+jOyrg==
   /emoji-regex/7.0.3:
     dev: false
     resolution:
@@ -120,6 +137,12 @@ packages:
       node: 6.* || 8.* || >= 10.*
     resolution:
       integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
+  /import-sort-parser-typescript/6.0.0:
+    dependencies:
+      typescript: 3.9.7
+    dev: true
+    resolution:
+      integrity: sha512-pgxnr3I156DonupQriNsgDb2zJN9TxrqCCIN1rwT/6SDO1rkJb+a0fjqshCjlgacTSA92oPAp1eAwmQUeZi3dw==
   /is-fullwidth-code-point/2.0.0:
     dev: false
     engines:
@@ -222,6 +245,13 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-azjRwrqk7nK21LU7QuL7DpDyPjvRROQvqPrNyyz6emdzbOh6fsNTvkSvUiThBLzC6+MN90rFu296VbPb/KV+3A==
+  /typescript/3.9.7:
+    dev: true
+    engines:
+      node: '>=4.2.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
   /which-module/2.0.0:
     dev: false
     resolution:
@@ -280,8 +310,11 @@ specifiers:
   '@stencil/core': ^2.0.1
   '@stencil/sass': ^1.4.1
   '@types/codemirror': ^0.0.101
+  '@types/dompurify': ^2.0.4
   '@types/showdown': ^1.9.3
   bulma: ^0.9.1
   codemirror: ^5.58.3
+  dompurify: ^2.2.2
+  import-sort-parser-typescript: ^6.0.0
   scope-css: 'github:patarapolw/scope-css'
   showdown: ^1.9.1

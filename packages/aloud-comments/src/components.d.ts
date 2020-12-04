@@ -14,15 +14,17 @@ export namespace Components {
         "firebase": Record<string, unknown>;
     }
     interface AloudEditor {
-        "parse": () => Promise<string>;
+        "getValue": () => Promise<string>;
         "value": string;
     }
-    interface MyComponent {
-        /**
-          * Firebase configuration
-          * @requires
-         */
-        "firebase": Record<string, unknown>;
+    interface AloudEntry {
+        "author": string;
+        "markdown": string;
+    }
+    interface AloudSubentry {
+        "author": string;
+        "markdown": string;
+        "parent": string;
     }
 }
 declare global {
@@ -38,16 +40,23 @@ declare global {
         prototype: HTMLAloudEditorElement;
         new (): HTMLAloudEditorElement;
     };
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLAloudEntryElement extends Components.AloudEntry, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLAloudEntryElement: {
+        prototype: HTMLAloudEntryElement;
+        new (): HTMLAloudEntryElement;
+    };
+    interface HTMLAloudSubentryElement extends Components.AloudSubentry, HTMLStencilElement {
+    }
+    var HTMLAloudSubentryElement: {
+        prototype: HTMLAloudSubentryElement;
+        new (): HTMLAloudSubentryElement;
     };
     interface HTMLElementTagNameMap {
         "aloud-comments": HTMLAloudCommentsElement;
         "aloud-editor": HTMLAloudEditorElement;
-        "my-component": HTMLMyComponentElement;
+        "aloud-entry": HTMLAloudEntryElement;
+        "aloud-subentry": HTMLAloudSubentryElement;
     }
 }
 declare namespace LocalJSX {
@@ -61,17 +70,20 @@ declare namespace LocalJSX {
     interface AloudEditor {
         "value"?: string;
     }
-    interface MyComponent {
-        /**
-          * Firebase configuration
-          * @requires
-         */
-        "firebase"?: Record<string, unknown>;
+    interface AloudEntry {
+        "author"?: string;
+        "markdown"?: string;
+    }
+    interface AloudSubentry {
+        "author"?: string;
+        "markdown"?: string;
+        "parent"?: string;
     }
     interface IntrinsicElements {
         "aloud-comments": AloudComments;
         "aloud-editor": AloudEditor;
-        "my-component": MyComponent;
+        "aloud-entry": AloudEntry;
+        "aloud-subentry": AloudSubentry;
     }
 }
 export { LocalJSX as JSX };
@@ -80,7 +92,8 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "aloud-comments": LocalJSX.AloudComments & JSXBase.HTMLAttributes<HTMLAloudCommentsElement>;
             "aloud-editor": LocalJSX.AloudEditor & JSXBase.HTMLAttributes<HTMLAloudEditorElement>;
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "aloud-entry": LocalJSX.AloudEntry & JSXBase.HTMLAttributes<HTMLAloudEntryElement>;
+            "aloud-subentry": LocalJSX.AloudSubentry & JSXBase.HTMLAttributes<HTMLAloudSubentryElement>;
         }
     }
 }

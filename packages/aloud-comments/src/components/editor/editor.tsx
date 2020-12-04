@@ -1,8 +1,3 @@
-import { Component, Prop, h, Method, State, Host } from '@stencil/core';
-import CodeMirror from 'codemirror';
-import showdown from 'showdown';
-import scopeCss from 'scope-css';
-
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/xml/xml';
@@ -11,26 +6,12 @@ import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/mode/overlay';
 import 'codemirror/addon/comment/comment';
 
-(window as any).CodeMirror = CodeMirror;
+import { Component, Host, Method, Prop, State, h } from '@stencil/core';
+import CodeMirror from 'codemirror';
 
-CodeMirror.defineMode('markdown-ejs', (config, parserConfig) => {
-  return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || 'markdown'), {
-    token: stream => {
-      let ch: string;
-      if (stream.match('<%')) {
-        while ((ch = stream.next()) != null)
-          if (ch === '%' && stream.next() === '>') {
-            stream.eat('>');
-            return 'application/x-ejs';
-          }
-      }
+import { makeHtml } from '../../utils/parser';
 
-      while (stream.next() !== null && !stream.match('<%', false)) {}
-
-      return null;
-    },
-  });
-});
+// (window as any).CodeMirror = CodeMirror;
 
 /**
  * @internal
@@ -38,7 +19,7 @@ CodeMirror.defineMode('markdown-ejs', (config, parserConfig) => {
 @Component({
   tag: 'aloud-editor',
   styleUrl: 'editor.scss',
-  scoped: true
+  shadow: true,
 })
 export class Editor {
   @Prop({
@@ -54,36 +35,21 @@ export class Editor {
   @State() _isEdit = true;
 
   setEdit(b: boolean) {
-    this._isEdit = b
+    this._isEdit = b;
 
     if (!b) {
-      this.parse()
+      this.parse();
     } else if (this.cm) {
-      this.cm.setValue(this.value)
+      this.cm.setValue(this.value);
     }
   }
 
-  readonly mdConverter = new showdown.Converter({
-    noHeaderId: true,
-    parseImgDimensions: true,
-    simplifiedAutoLink: true,
-    literalMidWordUnderscores: true,
-    strikethrough: true,
-    tables: true,
-    tasklists: true,
-    simpleLineBreaks: true,
-    openLinksInNewWindow: true,
-    backslashEscapesHTMLTags: true,
-    emoji: true,
-    underline: true,
-  });
-
   async initCm() {
     if (this.cm) {
-      return
+      return;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 10))
+    await new Promise(resolve => setTimeout(resolve, 10));
 
     const shiftTabs = (d: number) => {
       const spaces = Array(this.cm.getOption('indentUnit') + d).join(' ');
@@ -106,27 +72,22 @@ export class Editor {
       extraKeys: {
         'Tab': () => shiftTabs(1),
         'Shift-Tab': () => shiftTabs(-1),
-      }
+      },
     });
 
     this.cm.setValue(this.value);
   }
 
   @Method()
+  async getValue() {
+    return this.cm.getValue();
+  }
+
   async parse() {
     this.value = this.cm.getValue();
+    this.html = makeHtml(this.value);
 
-    const div = document.createElement('div');
-    div.id = 'md-' + Math.random().toString(36).substr(2);
-    div.innerHTML = this.mdConverter.makeHtml(this.value);
-    div.querySelectorAll('style').forEach(el => {
-      el.innerHTML = scopeCss(el.innerHTML, `#${div.id}`);
-    });
-
-    this.html = div.outerHTML;
-    div.remove();
-
-    return this.html
+    return this.html;
   }
 
   render() {
