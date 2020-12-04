@@ -1,0 +1,35 @@
+@import '~bulma/css/bulma.css';
+@import '~codemirror/lib/codemirror.css';
+
+:host {
+  display: block;
+  max-width: var(--max-width, 800px);
+  padding: 1rem;
+}
+
+.button {
+  max-height: 1.5em;
+}
+
+.textarea {
+  height: 200px;
+}
+
+.CodeMirror {
+  height: 100%;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+small.dot-separated {
+  > span + span::before {
+    content: ' · ';
+  }
+}

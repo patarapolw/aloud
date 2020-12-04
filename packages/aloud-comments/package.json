@@ -1,0 +1,43 @@
+{
+  "name": "aloud-comments",
+  "version": "0.1.0",
+  "description": "Commenting engine based on Firebase and REST API",
+  "author": {
+    "email": "polv@polv.cc",
+    "name": "Pacharapol Withayasakpunt",
+    "url": "https://www.polv.cc"
+  },
+  "repository": "github:patarapolw/aloud",
+  "main": "dist/index.cjs.js",
+  "module": "dist/custom-elements/index.js",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "types": "dist/custom-elements/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/aloud-comments/aloud-comments.js",
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build": "stencil build --docs",
+    "dev": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "generate": "stencil generate"
+  },
+  "dependencies": {
+    "@stencil/core": "^2.0.1",
+    "@stencil/sass": "^1.4.1",
+    "bulma": "^0.9.1",
+    "codemirror": "^5.58.3",
+    "scope-css": "github:patarapolw/scope-css",
+    "showdown": "^1.9.1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/codemirror": "^0.0.101",
+    "@types/showdown": "^1.9.3"
+  }
+}
