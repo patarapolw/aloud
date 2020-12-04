@@ -1,9 +1,11 @@
 dependencies:
   '@stencil/core': 2.3.0
   '@stencil/sass': 1.4.1_@stencil+core@2.3.0
+  axios: 0.21.0
   bulma: 0.9.1
   codemirror: 5.58.3
   dompurify: 2.2.2
+  jsonschema-definer: 1.3.1
   scope-css: github.com/patarapolw/scope-css/d5f985ebc796677377c12b019f046b1929d2da2a
   showdown: 1.9.1
 devDependencies:
@@ -59,6 +61,19 @@ packages:
     dev: true
     resolution:
       integrity: sha512-230RC8sFeHoT6sSUlRO6a8cAnclO06eeiq1QDfiv2FGCLWFvvERWgwIQD4FWqD9A69BN7Lzee4OXwoMVnnsWDw==
+  /@types/uuid/8.3.0:
+    dev: false
+    resolution:
+      integrity: sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ==
+  /ajv/6.12.6:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      fast-json-stable-stringify: 2.1.0
+      json-schema-traverse: 0.4.1
+      uri-js: 4.4.0
+    dev: false
+    resolution:
+      integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
   /ansi-regex/4.1.0:
     dev: false
     engines:
@@ -73,6 +88,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==
+  /axios/0.21.0:
+    dependencies:
+      follow-redirects: 1.13.0
+    dev: false
+    resolution:
+      integrity: sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
   /bulma/0.9.1:
     dev: false
     resolution:
@@ -123,6 +144,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-MqfriSRcYKtXSjdgFJM1rpeiNVLK6m5g7x60vyATMjDibfDbrNaA7Cj58grbkVGJu241eRdfRyoQCURMpk5YhA==
+  /fast-deep-equal/3.1.3:
+    dev: false
+    resolution:
+      integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
+  /fast-json-stable-stringify/2.1.0:
+    dev: false
+    resolution:
+      integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
   /find-up/3.0.0:
     dependencies:
       locate-path: 3.0.0
@@ -131,6 +160,12 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-1yD6RmLI1XBfxugvORwlck6f75tYL+iR0jqwsOrOxMZyGYqUuDhJ0l4AXdO1iX/FTs9cBAMEk1gWSEx1kSbylg==
+  /follow-redirects/1.13.0:
+    dev: false
+    engines:
+      node: '>=4.0'
+    resolution:
+      integrity: sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
   /get-caller-file/2.0.5:
     dev: false
     engines:
@@ -155,6 +190,19 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-OZ4IlER3zmRIoB9AqNhEggVxqIH4ofDns5nRrPS6yQxXE1TPCUpFznBfRQmQa8uC+pXqjMnukiJBxCisIxiLGA==
+  /json-schema-traverse/0.4.1:
+    dev: false
+    resolution:
+      integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
+  /jsonschema-definer/1.3.1:
+    dependencies:
+      '@types/uuid': 8.3.0
+      ajv: 6.12.6
+      ts-toolbelt: 6.15.5
+      uuid: 8.3.1
+    dev: false
+    resolution:
+      integrity: sha512-P+kBoS2vfem+Vbr5GM656EaH7dULKZkuNkj6qdd5pQQ37vlcCBt8Sz0lltCwdBvoZR/RrHrZWzSXWhX8o0x7Fw==
   /locate-path/3.0.0:
     dependencies:
       p-locate: 3.0.0
@@ -192,6 +240,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-zg6+ql94yxiSXqfYENe1mwEP1RU=
+  /punycode/2.1.1:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
   /require-directory/2.1.1:
     dev: false
     engines:
@@ -245,6 +299,10 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-azjRwrqk7nK21LU7QuL7DpDyPjvRROQvqPrNyyz6emdzbOh6fsNTvkSvUiThBLzC6+MN90rFu296VbPb/KV+3A==
+  /ts-toolbelt/6.15.5:
+    dev: false
+    resolution:
+      integrity: sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==
   /typescript/3.9.7:
     dev: true
     engines:
@@ -252,6 +310,17 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+  /uri-js/4.4.0:
+    dependencies:
+      punycode: 2.1.1
+    dev: false
+    resolution:
+      integrity: sha512-B0yRTzYdUCCn9n+F4+Gh4yIDtMQcaJsmYBDsTSG8g/OejKBodLQ2IHfN3bM7jUsRXndopT7OIXWdYqc1fjmV6g==
+  /uuid/8.3.1:
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
   /which-module/2.0.0:
     dev: false
     resolution:
@@ -312,9 +381,11 @@ specifiers:
   '@types/codemirror': ^0.0.101
   '@types/dompurify': ^2.0.4
   '@types/showdown': ^1.9.3
+  axios: ^0.21.0
   bulma: ^0.9.1
   codemirror: ^5.58.3
   dompurify: ^2.2.2
   import-sort-parser-typescript: ^6.0.0
+  jsonschema-definer: ^1.3.1
   scope-css: 'github:patarapolw/scope-css'
   showdown: ^1.9.1

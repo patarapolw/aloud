@@ -5,13 +5,13 @@ import 'codemirror/mode/htmlmixed/htmlmixed';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/mode/overlay';
 import 'codemirror/addon/comment/comment';
+import 'codemirror/addon/display/placeholder';
 
 import { Component, Host, Method, Prop, State, h } from '@stencil/core';
 import CodeMirror from 'codemirror';
 
 import { makeHtml } from '../../utils/parser';
-
-// (window as any).CodeMirror = CodeMirror;
+import { IFirebaseConfig } from '../aloud-comments/aloud-comments';
 
 /**
  * @internal
@@ -22,17 +22,19 @@ import { makeHtml } from '../../utils/parser';
   shadow: true,
 })
 export class Editor {
-  @Prop({
-    mutable: true,
-    reflect: true,
-  })
-  value: string = '';
-
-  cm!: CodeMirror.Editor;
-  cmEl!: HTMLTextAreaElement;
+  /**
+   * Markdown to be parsed in-and-out of the editor
+   *
+   * Use `.getValue()` to get and update the value
+   */
+  @Prop({ mutable: true, reflect: true }) value = '';
+  @Prop() firebase!: IFirebaseConfig;
 
   @State() html = '';
   @State() _isEdit = true;
+
+  cm!: CodeMirror.Editor;
+  cmEl!: HTMLTextAreaElement;
 
   setEdit(b: boolean) {
     this._isEdit = b;
@@ -80,7 +82,8 @@ export class Editor {
 
   @Method()
   async getValue() {
-    return this.cm.getValue();
+    this.value = this.cm.getValue();
+    return this.value;
   }
 
   async parse() {
@@ -125,6 +128,7 @@ export class Editor {
                 this.cmEl = el;
                 this.initCm();
               }}
+              placeholder="Type in markdown to comment..."
             ></textarea>
           </div>
 

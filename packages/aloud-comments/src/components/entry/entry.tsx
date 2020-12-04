@@ -1,6 +1,7 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
 
 import { makeHtml } from '../../utils/parser';
+import { IApi, IEntry, IFirebaseConfig } from '../aloud-comments/aloud-comments';
 
 /**
  * @internal
@@ -11,11 +12,12 @@ import { makeHtml } from '../../utils/parser';
   scoped: true,
 })
 export class AloudEntry {
-  @Prop() author: string;
   @Prop({
     mutable: true,
   })
-  markdown: string;
+  entry!: IEntry;
+  @Prop() api!: IApi;
+  @Prop() firebase!: IFirebaseConfig;
 
   @State() isEdit = false;
 
@@ -31,17 +33,18 @@ export class AloudEntry {
         </figure>
         <div class="media-content">
           <div class="content">
-            <h5>{this.author}</h5>
+            <h5>{this.entry.author}</h5>
             {this.isEdit ? (
               <aloud-editor
                 class="textarea"
+                firebase={this.firebase}
                 ref={el => {
                   this.editor = el;
                 }}
-                value={this.markdown}
+                value={this.entry.markdown}
               />
             ) : (
-              <div innerHTML={makeHtml(this.markdown)} />
+              <div innerHTML={makeHtml(this.entry.markdown)} />
             )}
             <small class="dot-separated">
               <span>
@@ -55,8 +58,32 @@ export class AloudEntry {
                   role="button"
                   onClick={() => {
                     if (this.editor) {
-                      this.editor.getValue().then(v => {
-                        this.markdown = v;
+                      this.editor.getValue().then(async v => {
+                        if (this.api) {
+                          return this.api.axios
+                            .patch(
+                              this.api.update,
+                              {
+                                markdown: v,
+                              },
+                              {
+                                params: {
+                                  id: this.entry.id,
+                                },
+                              },
+                            )
+                            .then(() => {
+                              this.entry = {
+                                ...this.entry,
+                                markdown: v,
+                              };
+                            });
+                        }
+
+                        this.entry = {
+                          ...this.entry,
+                          markdown: v,
+                        };
                       });
                     }
 

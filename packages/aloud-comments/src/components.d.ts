@@ -5,25 +5,45 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { IApi, IFirebaseConfig } from "./components/aloud-comments/aloud-comments";
+import { IApi as IApi1, IEntry, IFirebaseConfig as IFirebaseConfig1 } from "./components/aloud-comments/aloud-comments";
 export namespace Components {
     interface AloudComments {
         /**
-          * Firebase configuration
-          * @requires
+          * API configuration. Will be `yaml.safeLoad()`  Requires either string version in HTML or Object version in JSX
          */
-        "firebase": Record<string, unknown>;
+        "_api": string;
+        /**
+          * Firebase configuration. Will be `yaml.safeLoad()`  Requires either string version in HTML or Object version in JSX
+         */
+        "_firebase": string;
+        /**
+          * API configuration
+         */
+        "api": IApi;
+        "debug": boolean;
+        /**
+          * Firebase configuration
+         */
+        "firebase": IFirebaseConfig;
     }
     interface AloudEditor {
+        "firebase": IFirebaseConfig;
         "getValue": () => Promise<string>;
+        /**
+          * Markdown to be parsed in-and-out of the editor  Use `.getValue()` to get and update the value
+         */
         "value": string;
     }
     interface AloudEntry {
-        "author": string;
-        "markdown": string;
+        "api": IApi;
+        "entry": IEntry;
+        "firebase": IFirebaseConfig;
     }
     interface AloudSubentry {
-        "author": string;
-        "markdown": string;
+        "api": IApi;
+        "entry": IEntry;
+        "firebase": IFirebaseConfig;
         "parent": string;
     }
 }
@@ -62,22 +82,40 @@ declare global {
 declare namespace LocalJSX {
     interface AloudComments {
         /**
-          * Firebase configuration
-          * @requires
+          * API configuration. Will be `yaml.safeLoad()`  Requires either string version in HTML or Object version in JSX
          */
-        "firebase"?: Record<string, unknown>;
+        "_api"?: string;
+        /**
+          * Firebase configuration. Will be `yaml.safeLoad()`  Requires either string version in HTML or Object version in JSX
+         */
+        "_firebase"?: string;
+        /**
+          * API configuration
+         */
+        "api": IApi;
+        "debug"?: boolean;
+        /**
+          * Firebase configuration
+         */
+        "firebase": IFirebaseConfig;
     }
     interface AloudEditor {
+        "firebase": IFirebaseConfig;
+        /**
+          * Markdown to be parsed in-and-out of the editor  Use `.getValue()` to get and update the value
+         */
         "value"?: string;
     }
     interface AloudEntry {
-        "author"?: string;
-        "markdown"?: string;
+        "api": IApi;
+        "entry": IEntry;
+        "firebase": IFirebaseConfig;
     }
     interface AloudSubentry {
-        "author"?: string;
-        "markdown"?: string;
-        "parent"?: string;
+        "api": IApi;
+        "entry": IEntry;
+        "firebase": IFirebaseConfig;
+        "parent": string;
     }
     interface IntrinsicElements {
         "aloud-comments": AloudComments;

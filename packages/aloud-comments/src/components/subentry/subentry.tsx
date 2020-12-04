@@ -1,6 +1,7 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
 
 import { makeHtml } from '../../utils/parser';
+import { IApi, IEntry, IFirebaseConfig } from '../aloud-comments/aloud-comments';
 
 /**
  * @internal
@@ -11,9 +12,13 @@ import { makeHtml } from '../../utils/parser';
   scoped: true,
 })
 export class AloudEntry {
-  @Prop() parent: string;
-  @Prop() author: string;
-  @Prop() markdown: string;
+  @Prop() parent!: string;
+  @Prop({
+    mutable: true,
+  })
+  entry!: IEntry;
+  @Prop() api!: IApi;
+  @Prop() firebase!: IFirebaseConfig;
 
   @State() isEdit = false;
 
@@ -24,21 +29,46 @@ export class AloudEntry {
       <Host>
         {this.isEdit ? (
           <aloud-editor
+            firebase={this.firebase}
             ref={el => {
               this.editor = el;
             }}
-            value={this.markdown}
+            value={this.entry.markdown}
           />
         ) : (
           <small
             ref={() => {
               if (this.editor) {
-                this.editor.getValue().then(v => {
-                  this.markdown = v;
+                this.editor.getValue().then(async v => {
+                  if (this.api) {
+                    return this.api.axios
+                      .patch(
+                        this.api.update,
+                        {
+                          markdown: v,
+                        },
+                        {
+                          params: {
+                            id: this.entry.id,
+                          },
+                        },
+                      )
+                      .then(() => {
+                        this.entry = {
+                          ...this.entry,
+                          markdown: v,
+                        };
+                      });
+                  }
+
+                  this.entry = {
+                    ...this.entry,
+                    markdown: v,
+                  };
                 });
               }
             }}
-            innerHTML={makeHtml(`[**@${this.parent}**](#) ` + this.markdown)}
+            innerHTML={makeHtml(`[**@${this.parent}**](#) ` + this.entry.markdown)}
           />
         )}
         <small class="dot-separated">
@@ -59,7 +89,7 @@ export class AloudEntry {
             </a>
           </span>
           <span>2 hrs</span>
-          <span class="small-author">by {this.author}</span>
+          <span class="small-author">by {this.entry.author}</span>
         </small>
       </Host>
     );
