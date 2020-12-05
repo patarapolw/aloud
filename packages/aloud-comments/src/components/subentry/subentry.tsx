@@ -1,5 +1,7 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
+import prettyMs from 'pretty-ms';
 
+import { IAuthor } from '../../utils/faker';
 import { makeHtml } from '../../utils/parser';
 import { IApi, IEntry, IFirebaseConfig } from '../aloud-comments/aloud-comments';
 
@@ -12,7 +14,7 @@ import { IApi, IEntry, IFirebaseConfig } from '../aloud-comments/aloud-comments'
   scoped: true,
 })
 export class AloudEntry {
-  @Prop() parent!: string;
+  @Prop() parent!: IAuthor;
   @Prop({
     mutable: true,
   })
@@ -68,7 +70,7 @@ export class AloudEntry {
                 });
               }
             }}
-            innerHTML={makeHtml(`[**@${this.parent}**](#) ` + this.entry.markdown)}
+            innerHTML={makeHtml(`[**@${this.parent.name}**](#) ` + this.entry.markdown)}
           />
         )}
         <small class="dot-separated">
@@ -88,8 +90,8 @@ export class AloudEntry {
               {this.isEdit ? 'Save' : 'Edit'}
             </a>
           </span>
-          <span>2 hrs</span>
-          <span class="small-author">by {this.entry.author}</span>
+          <span>{prettyMs(+new Date() - this.entry.createdAt, { unitCount: 2, secondsDecimalDigits: 0 })}</span>
+          <span class="small-author">by {this.entry.author.name}</span>
         </small>
       </Host>
     );

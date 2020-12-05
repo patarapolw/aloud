@@ -43,3 +43,36 @@ small {
     }
   }
 }
+
+span.tooltip {
+  position: absolute;
+  width: 150px;
+  height: 20px;
+  line-height: 20px;
+  padding: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: rgb(113, 157, 171);
+  background: rgba(255, 229, 143, 0.5);
+  border: 4px solid rgb(255, 229, 143);
+  border-radius: 5px;
+  text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+  box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 0px;
+  z-index: 50;
+  left: -50px;
+  bottom: 80px;
+  overflow: visible;
+  white-space: nowrap;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgb(255, 229, 143) transparent transparent transparent;
+    top: 44px;
+    left: 70px;
+  }
+}

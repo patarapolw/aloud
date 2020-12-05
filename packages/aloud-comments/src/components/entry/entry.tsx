@@ -1,4 +1,5 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
+import prettyMs from 'pretty-ms';
 
 import { makeHtml } from '../../utils/parser';
 import { IApi, IEntry, IFirebaseConfig } from '../aloud-comments/aloud-comments';
@@ -28,12 +29,12 @@ export class AloudEntry {
       <Host class="media">
         <figure class="media-left">
           <p class="image is-48x48">
-            <img src="https://bulma.io/images/placeholders/96x96.png" />
+            <img src={this.entry.author.image} alt={this.entry.author.name} />
           </p>
         </figure>
         <div class="media-content">
           <div class="content">
-            <h5>{this.entry.author}</h5>
+            <h5>{this.entry.author.name}</h5>
             {this.isEdit ? (
               <aloud-editor
                 class="textarea"
@@ -93,7 +94,7 @@ export class AloudEntry {
                   {this.isEdit ? 'Save' : 'Edit'}
                 </a>
               </span>
-              <span>2 hrs</span>
+              <span>{prettyMs(+new Date() - this.entry.createdAt, { unitCount: 2, secondsDecimalDigits: 0 })}</span>
             </small>
           </div>
 

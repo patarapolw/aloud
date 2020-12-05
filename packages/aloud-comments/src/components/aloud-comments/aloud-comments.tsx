@@ -2,17 +2,22 @@ import { Component, Host, Prop, State, h } from '@stencil/core';
 import axios, { AxiosInstance } from 'axios';
 import S, { BaseSchema } from 'jsonschema-definer';
 
+import { IAuthor, IPost, randomAuthor, randomPost } from '../../utils/faker';
+
 const sEntry = (S.shape({
   id: S.anyOf(S.string(), S.number()),
-  author: S.string(),
+  author: S.shape({
+    id: S.anyOf(S.string(), S.number()),
+    name: S.string(),
+    image: S.string(),
+  }),
   markdown: S.string(),
+  createdAt: S.number(),
+  updatedAt: S.number().optional(),
   children: S.list(S.custom(v => !!sEntry.validate(v)[0])).optional(),
 }) as unknown) as BaseSchema<IEntry>;
 
-export interface IEntry {
-  id: string | number;
-  author: string;
-  markdown: string;
+export interface IEntry extends IPost {
   children?: IEntry[];
 }
 
@@ -74,12 +79,13 @@ export class AloudComments {
 
   @Prop() debug = false;
 
-  @State() author = 'John Doe';
+  @State() author: IAuthor;
   @State() entries: IEntry[] = [];
+  @State() isImageTooltip = false;
 
   mainEditor: HTMLAloudEditorElement;
 
-  private generateReplies(ents: IEntry[], parent = 'unknown', depth = 0) {
+  private generateReplies(ents: IEntry[], parent: IAuthor | null = null, depth = 0) {
     return (
       <section>
         {ents.map(it =>
@@ -110,45 +116,55 @@ export class AloudComments {
         this.entries = data;
       });
     } else {
+      const authors = {
+        collection: [] as IAuthor[],
+        new() {
+          const a = randomAuthor();
+          this.collection.push(a);
+          return a;
+        },
+      };
+
+      const posts = {
+        collection: new Map<string, IPost>(),
+        new(id: string, parent?: string) {
+          const a = randomPost(parent ? new Date(this.collection.get(parent).createdAt) : undefined);
+          this.collection.set(id, {
+            ...a,
+            id,
+          });
+          return a;
+        },
+      };
+
+      this.author = authors.new();
+
       this.entries = [
         {
-          id: '1',
-          author: 'Barbara Middleton',
-          markdown:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta eros lacus, nec ultricies elit blandit non. Suspendisse pellentesque mauris sit amet dolor\n\n' +
-            'Blandit rutrum. Nunc in tempus turpis.',
+          ...posts.new('1'),
+          author: authors.new(),
           children: [
             {
-              id: '11',
-              author: 'Sean Brown',
-              markdown:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis porta eros lacus, nec ultricies elit blandit non. Suspendisse pellentesque mauris sit amet dolor\n\n' +
-                'blandit rutrum. Nunc in tempus turpis.',
+              ...posts.new('11', '1'),
+              author: authors.collection[0],
               children: [
                 {
-                  id: '111',
-                  author: 'Gay Hernandez',
-                  markdown: 'Vivamus quis semper metus, non tincidunt dolor. Vivamus in mi eu lorem cursus ullamcorper sit amet nec massa.',
+                  ...posts.new('111', '11'),
+                  author: authors.new(),
                   children: [
                     {
-                      id: '1111',
-                      author: 'Shaun Davenport',
-                      markdown:
-                        'Morbi vitae diam et purus tincidunt porttitor vel vitae augue. Praesent malesuada metus sed pharetra euismod. Cras tellus odio, tincidunt iaculis diam non\n\n' +
-                        'porta aliquet tortor.',
+                      ...posts.new('1111', '111'),
+                      author: authors.collection[1],
                     },
                   ],
                 },
               ],
             },
             {
-              id: '12',
-              author: 'Kayli Eunice',
-              markdown:
-                'Sed convallis scelerisque mauris, non pulvinar nunc mattis vel. Maecenas varius felis sit amet magna vestibulum euismod malesuada cursus libero. Vestibulum ante\n\n' +
-                'ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus lacinia non nisl id feugiat.',
+              ...posts.new('12', '1'),
+              author: authors.new(),
             },
-          ],
+          ].sort((i1, i2) => i2.createdAt - i1.createdAt),
         },
       ];
     }
@@ -159,8 +175,11 @@ export class AloudComments {
       <Host>
         <article class="media mb-4">
           <figure class="media-left">
-            <p class="image is-64x64">
-              <img src="https://bulma.io/images/placeholders/128x128.png" />
+            <p class="image is-64x64" onMouseOver={() => (this.isImageTooltip = true)} onMouseLeave={() => (this.isImageTooltip = false)}>
+              <span class="tooltip" style={{ visibility: this.isImageTooltip ? 'visible' : 'hidden' }}>
+                {this.author.name}
+              </span>
+              <img src={this.author.image} alt={this.author.name} />
             </p>
           </figure>
           <div class="media-content">
@@ -187,15 +206,16 @@ export class AloudComments {
                         if (this.api) {
                           return this.api.axios
                             .post(this.api.post, {
-                              author: this.author,
+                              author: this.author.id,
                               markdown: v,
                             })
-                            .then(({ data: { id } }) => {
+                            .then(({ data: { id, createdAt } }) => {
                               this.entries = [
                                 {
                                   id,
                                   author: this.author,
                                   markdown: v,
+                                  createdAt: +new Date(createdAt),
                                 },
                                 ...this.entries,
                               ];
@@ -207,6 +227,7 @@ export class AloudComments {
                             id: Math.random(),
                             author: this.author,
                             markdown: v,
+                            createdAt: +new Date(),
                           },
                           ...this.entries,
                         ];

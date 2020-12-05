@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { IApi, IFirebaseConfig } from "./components/aloud-comments/aloud-comments";
 import { IApi as IApi1, IEntry, IFirebaseConfig as IFirebaseConfig1 } from "./components/aloud-comments/aloud-comments";
+import { IAuthor } from "./utils/faker";
 export namespace Components {
     interface AloudComments {
         /**
@@ -44,7 +45,7 @@ export namespace Components {
         "api": IApi;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
-        "parent": string;
+        "parent": IAuthor;
     }
 }
 declare global {
@@ -115,7 +116,7 @@ declare namespace LocalJSX {
         "api": IApi;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
-        "parent": string;
+        "parent": IAuthor;
     }
     interface IntrinsicElements {
         "aloud-comments": AloudComments;
