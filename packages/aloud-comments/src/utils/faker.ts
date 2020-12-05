@@ -24,7 +24,7 @@ export function randomAuthor(): IAuthor {
 export function randomPost(within?: Date): Omit<IPost, 'author'> {
   return {
     id: Math.random(),
-    markdown: faker.lorem.paragraphs(2, '\n\n'),
+    markdown: faker.lorem.paragraphs(Math.random() * 2, '\n\n'),
     createdAt: within ? +faker.date.between(within, new Date()) : +randomDate(),
   };
 }
@@ -44,9 +44,6 @@ function randomDate(seed = Math.random()): Date {
   if (seed < 0.8) {
     return faker.date.between(new Date(+now - 1000 * 60 * 60 * 24 * 30), now); // within days
   }
-  if (seed < 0.95) {
-    return faker.date.between(new Date(+now - 1000 * 60 * 60 * 24 * 365), now); // within a years
-  }
 
-  return faker.date.between(new Date(+now - 1000 * 60 * 60 * 24 * 365 * 10), now); // within couple of years
+  return faker.date.between(new Date(+now - 1000 * 60 * 60 * 24 * 365), now); // within a years
 }

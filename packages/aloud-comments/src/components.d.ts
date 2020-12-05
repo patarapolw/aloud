@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { IApi, IFirebaseConfig } from "./components/aloud-comments/aloud-comments";
 import { IApi as IApi1, IEntry, IFirebaseConfig as IFirebaseConfig1 } from "./components/aloud-comments/aloud-comments";
 import { IAuthor } from "./utils/faker";
+import { AxiosInstance } from "axios";
 export namespace Components {
     interface AloudComments {
         /**
@@ -22,11 +23,16 @@ export namespace Components {
           * API configuration
          */
         "api": IApi;
+        /**
+          * Axios object. Can be ones configured with CSRF or auth.
+         */
+        "axios": AxiosInstance;
         "debug": boolean;
         /**
           * Firebase configuration
          */
         "firebase": IFirebaseConfig;
+        "firebaseui": firebaseui.auth.AuthUI;
     }
     interface AloudEditor {
         "firebase": IFirebaseConfig;
@@ -38,14 +44,19 @@ export namespace Components {
     }
     interface AloudEntry {
         "api": IApi;
+        "axios": AxiosInstance;
+        "depth": number;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
+        "user": IAuthor;
     }
     interface AloudSubentry {
         "api": IApi;
+        "axios": AxiosInstance;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
         "parent": IAuthor;
+        "user": IAuthor;
     }
 }
 declare global {
@@ -94,11 +105,16 @@ declare namespace LocalJSX {
           * API configuration
          */
         "api": IApi;
+        /**
+          * Axios object. Can be ones configured with CSRF or auth.
+         */
+        "axios"?: AxiosInstance;
         "debug"?: boolean;
         /**
           * Firebase configuration
          */
         "firebase": IFirebaseConfig;
+        "firebaseui": firebaseui.auth.AuthUI;
     }
     interface AloudEditor {
         "firebase": IFirebaseConfig;
@@ -109,14 +125,19 @@ declare namespace LocalJSX {
     }
     interface AloudEntry {
         "api": IApi;
+        "axios": AxiosInstance;
+        "depth": number;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
+        "user": IAuthor;
     }
     interface AloudSubentry {
         "api": IApi;
+        "axios": AxiosInstance;
         "entry": IEntry;
         "firebase": IFirebaseConfig;
         "parent": IAuthor;
+        "user": IAuthor;
     }
     interface IntrinsicElements {
         "aloud-comments": AloudComments;

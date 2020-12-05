@@ -1,5 +1,6 @@
 import { Component, Host, Prop, State, h } from '@stencil/core';
-import axios, { AxiosInstance } from 'axios';
+import axios from 'axios';
+import * as firebaseui from 'firebaseui';
 import S, { BaseSchema } from 'jsonschema-definer';
 
 import { IAuthor, IPost, randomAuthor, randomPost } from '../../utils/faker';
@@ -22,7 +23,6 @@ export interface IEntry extends IPost {
 }
 
 const sApi = S.shape({
-  axios: S.any().optional() as BaseSchema<AxiosInstance, false>,
   init: S.string(),
   post: S.string(),
   update: S.string(),
@@ -59,6 +59,12 @@ export class AloudComments {
   })
   firebase!: IFirebaseConfig;
 
+  @Prop({
+    mutable: true,
+    reflect: true,
+  })
+  firebaseui!: firebaseui.auth.AuthUI;
+
   /**
    * API configuration. Will be `yaml.safeLoad()`
    *
@@ -77,42 +83,30 @@ export class AloudComments {
   })
   api!: IApi;
 
+  /**
+   * Axios object. Can be ones configured with CSRF or auth.
+   */
+  @Prop({
+    mutable: true,
+    reflect: true,
+  })
+  axios = axios.create();
+
   @Prop() debug = false;
 
   @State() author: IAuthor;
   @State() entries: IEntry[] = [];
-  @State() isImageTooltip = false;
 
   mainEditor: HTMLAloudEditorElement;
-
-  private generateReplies(ents: IEntry[], parent: IAuthor | null = null, depth = 0) {
-    return (
-      <section>
-        {ents.map(it =>
-          depth > 2 ? (
-            <aloud-subentry parent={parent} entry={it} api={this.api} firebase={this.firebase}>
-              {it.children ? this.generateReplies(it.children, it.author, depth + 1) : null}
-            </aloud-subentry>
-          ) : (
-            <aloud-entry entry={it} api={this.api} firebase={this.firebase}>
-              {it.children ? this.generateReplies(it.children, it.author, depth + 1) : null}
-            </aloud-entry>
-          ),
-        )}
-      </section>
-    );
-  }
 
   componentWillLoad() {
     if (!this.debug) {
       this.firebase = this.firebase || S.object().ensure(JSON.parse(this._firebase));
-
       this.api = this.api || sApi.ensure(JSON.parse(this._api));
-      this.api.axios = this.api.axios || axios.create();
     }
 
     if (this.api) {
-      this.api.axios.get(this.api.init).then(({ data }) => {
+      this.axios.get(this.api.init).then(({ data }) => {
         this.entries = data;
       });
     } else {
@@ -141,6 +135,10 @@ export class AloudComments {
 
       this.entries = [
         {
+          ...posts.new('0'),
+          author: authors.new(),
+        },
+        {
           ...posts.new('1'),
           author: authors.new(),
           children: [
@@ -154,7 +152,7 @@ export class AloudComments {
                   children: [
                     {
                       ...posts.new('1111', '111'),
-                      author: authors.collection[1],
+                      author: this.author,
                     },
                   ],
                 },
@@ -166,6 +164,10 @@ export class AloudComments {
             },
           ].sort((i1, i2) => i2.createdAt - i1.createdAt),
         },
+        {
+          ...posts.new('2'),
+          author: authors.collection[4],
+        },
       ];
     }
   }
@@ -175,11 +177,8 @@ export class AloudComments {
       <Host>
         <article class="media mb-4">
           <figure class="media-left">
-            <p class="image is-64x64" onMouseOver={() => (this.isImageTooltip = true)} onMouseLeave={() => (this.isImageTooltip = false)}>
-              <span class="tooltip" style={{ visibility: this.isImageTooltip ? 'visible' : 'hidden' }}>
-                {this.author.name}
-              </span>
-              <img src={this.author.image} alt={this.author.name} />
+            <p class="image is-64x64">
+              <img src={this.author.image} alt={this.author.name} title={this.author.name} />
             </p>
           </figure>
           <div class="media-content">
@@ -204,18 +203,18 @@ export class AloudComments {
                     onClick={() => {
                       this.mainEditor.getValue().then(async v => {
                         if (this.api) {
-                          return this.api.axios
+                          return this.axios
                             .post(this.api.post, {
                               author: this.author.id,
                               markdown: v,
                             })
-                            .then(({ data: { id, createdAt } }) => {
+                            .then(({ data: { id } }) => {
                               this.entries = [
                                 {
                                   id,
                                   author: this.author,
                                   markdown: v,
-                                  createdAt: +new Date(createdAt),
+                                  createdAt: +new Date(),
                                 },
                                 ...this.entries,
                               ];
@@ -244,7 +243,9 @@ export class AloudComments {
           </div>
         </article>
 
-        {this.generateReplies(this.entries)}
+        {this.entries.map(it => (
+          <aloud-entry user={this.author} entry={it} api={this.api} axios={this.axios} firebase={this.firebase} depth={1}></aloud-entry>
+        ))}
       </Host>
     );
   }
