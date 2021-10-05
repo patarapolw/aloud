@@ -22,7 +22,7 @@
     "fastify-helmet": "^3.0.2",
     "fastify-oas": "^2.7.0",
     "fastify-session": "^4.0.0",
-    "fastify-static": "^2.7.0",
+    "fastify-static": "^4.2.4",
     "firebase-admin": "^8.12.1",
     "handlebars": "^4.7.6",
     "mongoose": "^5.9.15",
