@@ -16,7 +16,7 @@
     "highlight.js": "^10.0.3",
     "highlightjs-vue": "github:patarapolw/highlightjs-vue",
     "humanize-duration": "^3.23.0",
-    "liquidjs": "^9.12.0",
+    "liquidjs": "^10.0.0",
     "markdown-it": "^11.0.0",
     "markdown-it-container": "^2.0.0",
     "markdown-it-emoji": "^1.4.0",
